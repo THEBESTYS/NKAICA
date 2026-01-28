@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai-Culture Academy | 프리미엄 문화 아카데미</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconify Icons -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ApexCharts for Dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <style>
+        :root {
+            --primary-color: #e11d48; /* rose-600 */
+            --primary-dark: #be123c; /* rose-700 */
+            --accent-color: #7c3aed; /* violet-600 */
+            --text-primary: #18181b;
+            --text-secondary: #71717a;
+            --bg-light: #fafafa;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-korean {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        /* Smooth transitions */
+        .transition-all-300 {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+        
+        /* Page fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary-color);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Glass effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Keep Korean text from breaking */
+        .keep-all {
+            word-break: keep-all;
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    
+    <script>
+        // Tailwind configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e11d48',
+                        'primary-dark': '#be123c',
+                        accent: '#7c3aed',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'Noto Sans KR', 'sans-serif'],
+                        'display': ['Playfair Display', 'serif'],
+                        'korean': ['Noto Sans KR', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                        'pulse-slow': 'pulse 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-white text-zinc-900">
+    <!-- Language selector floating button -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
+        <div id="language-dropdown" class="hidden bg-white rounded-lg shadow-xl border border-zinc-200 p-2 mb-2">
+            <button onclick="changeLanguage('ko')" class="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-zinc-50 transition-all-300">
+                <span class="text-sm font-medium">한국어</span>
+            </button>
+            <button onclick="changeLanguage('en')" class="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-zinc-50 transition-all-300">
+                <span class="text-sm font-medium">English</span>
+            </button>
+            <button onclick="changeLanguage('zh')" class="flex items-center gap-2 w-full px-3 py-2 rounded hover:bg-zinc-50 transition-all-300">
+                <span class="text-sm font-medium">中文</span>
+            </button>
+        </div>
+        <button onclick="toggleLanguageDropdown()" class="bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary-dark transition-all-300 flex items-center justify-center">
+            <iconify-icon icon="mdi:translate" width="24" height="24"></iconify-icon>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-40 glass border-b border-zinc-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="#home" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">K</span>
+                        </div>
+                        <span class="font-display text-xl font-semibold tracking-tight">Kai-Culture Academy</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">홈</a>
+                    <a href="#courses" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">강좌</a>
+                    <a href="#magazine" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">매거진</a>
+                    <a href="#reservation" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">예약</a>
+                    <a href="#locations" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">지점</a>
+                    <a href="#about" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300">소개</a>
+                </nav>
+                
+                <!-- Auth buttons -->
+                <div class="flex items-center space-x-4">
+                    <button id="login-btn" class="text-sm font-medium text-zinc-700 hover:text-primary transition-all-300 hidden md:block">로그인</button>
+                    <button id="signup-btn" class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-dark transition-all-300 hidden md:block">회원가입</button>
+                    
+                    <!-- User dropdown (when logged in) -->
+                    <div id="user-menu" class="hidden relative">
+                        <button id="user-menu-button" class="flex items-center space-x-2 focus:outline-none">
+                            <div class="w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center">
+                                <iconify-icon icon="mdi:account" width="20" height="20"></iconify-icon>
+                            </div>
+                            <span id="username" class="text-sm font-medium">사용자</span>
+                            <iconify-icon icon="mdi:chevron-down" width="20" height="20"></iconify-icon>
+                        </button>
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-zinc-200 py-1 z-10">
+                            <a href="#dashboard" class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">대시보드</a>
+                            <a href="#my-reservations" class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">내 예약</a>
+                            <a href="#profile" class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">프로필</a>
+                            <div class="border-t border-zinc-200 my-1"></div>
+                            <button id="logout-btn" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-zinc-50">로그아웃</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <button id="mobile-menu-button" class="md:hidden text-zinc-700">
+                        <iconify-icon icon="mdi:menu" width="24" height="24"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-zinc-100 px-4 py-3">
+            <div class="flex flex-col space-y-3">
+                <a href="#home" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">홈</a>
+                <a href="#courses" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">강좌</a>
+                <a href="#magazine" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">매거진</a>
+                <a href="#reservation" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">예약</a>
+                <a href="#locations" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">지점</a>
+                <a href="#about" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">소개</a>
+                <div class="pt-2 border-t border-zinc-100">
+                    <button id="mobile-login-btn" class="text-sm font-medium text-zinc-700 hover:text-primary py-2 w-full text-left">로그인</button>
+                    <button id="mobile-signup-btn" class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-dark mt-2 w-full">회원가입</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="fade-in">
+        <!-- Hero Section -->
+        <section id="home" class="py-12 md:py-20 bg-gradient-to-br from-white to-zinc-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                            <span>롯데ON 협업 프로젝트</span>
+                        </div>
+                        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                            일상에 <span class="gradient-text">예술</span>을 담다
+                        </h1>
+                        <p class="text-lg text-zinc-600 mb-8 max-w-lg">
+                            Kai-Culture Academy는 롯데ON과 함께하는 프리미엄 문화 아카데미입니다. 
+                            K-Pop, K-Beauty, K-에듀테크를 중심으로 한 특별한 경험을 제공합니다.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="#courses" class="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-primary-dark transition-all-300 text-center">
+                                강좌 탐색하기
+                            </a>
+                            <a href="#reservation" class="border border-primary text-primary px-6 py-3 rounded-full font-medium hover:bg-primary/5 transition-all-300 text-center">
+                                지금 예약하기
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                                 alt="Kai Culture Academy" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl max-w-xs">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                                    <iconify-icon icon="mdi:star" class="text-accent" width="20" height="20"></iconify-icon>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-lg">120+ 클래스</p>
+                                    <p class="text-sm text-zinc-500">전문가 강의</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-zinc-600">K-Pop 댄스부터 K-Beauty, 한국 전통 공예까지 다양한 프로그램</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">인기 강좌</h2>
+                    <p class="text-zinc-600 max-w-2xl mx-auto">K-Pop, K-Beauty, 한국 문화를 체험할 수 있는 다양한 프로그램</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Course 1: K-Pop Dance -->
+                    <div class="bg-white rounded-xl overflow-hidden border border-zinc-200 hover:shadow-xl transition-all-300 group">
+                        <div class="relative overflow-hidden h-48">
+                            <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="K-Pop Dance Class" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                                인기
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-bold text-xl">K-Pop 댄스 마스터클래스</h3>
+                                <span class="text-primary font-bold">₩120,000</span>
+                            </div>
+                            <p class="text-zinc-600 text-sm mb-4">월드 K-Pop 센터 협업. 현직 안무가와 함께하는 K-Pop 그룹 댄스 클래스</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-sm text-zinc-500">
+                                    <iconify-icon icon="mdi:calendar" width="16" height="16" class="mr-1"></iconify-icon>
+                                    <span>주 2회, 4주</span>
+                                </div>
+                                <button class="reserve-btn bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-dark transition-all-300" data-course="K-Pop 댄스 마스터클래스">
+                                    예약하기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 2: K-Beauty -->
+                    <div class="bg-white rounded-xl overflow-hidden border border-zinc-200 hover:shadow-xl transition-all-300 group">
+                        <div class="relative overflow-hidden h-48">
+                            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="K-Beauty Class" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+                                NEW
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-bold text-xl">K-Beauty 스킨케어 워크숍</h3>
+                                <span class="text-primary font-bold">₩85,000</span>
+                            </div>
+                            <p class="text-zinc-600 text-sm mb-4">리본 코리아 협업. 한국식 스킨케어 루틴과 메이크업 테크닉을 배우는 클래스</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-sm text-zinc-500">
+                                    <iconify-icon icon="mdi:calendar" width="16" height="16" class="mr-1"></iconify-icon>
+                                    <span>주 1회, 3주</span>
+                                </div>
+                                <button class="reserve-btn bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-dark transition-all-300" data-course="K-Beauty 스킨케어 워크숍">
+                                    예약하기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course 3: Traditional Craft -->
+                    <div class="bg-white rounded-xl overflow-hidden border border-zinc-200 hover:shadow-xl transition-all-300 group">
+                        <div class="relative overflow-hidden h-48">
+                            <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Traditional Craft Class" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-bold text-xl">한국 전통 도예 클래스</h3>
+                                <span class="text-primary font-bold">₩95,000</span>
+                            </div>
+                            <p class="text-zinc-600 text-sm mb-4">한국 전통 기법을 활용한 도자기 만들기. 완성품은 가져갈 수 있습니다</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center text-sm text-zinc-500">
+                                    <iconify-icon icon="mdi:calendar" width="16" height="16" class="mr-1"></iconify-icon>
+                                    <span>주 1회, 6주</span>
+                                </div>
+                                <button class="reserve-btn bg-primary text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-dark transition-all-300" data-course="한국 전통 도예 클래스">
+                                    예약하기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <a href="#all-courses" class="inline-flex items-center text-primary font-medium hover:text-primary-dark transition-all-300">
+                        모든 강좌 보기
+                        <iconify-icon icon="mdi:chevron-right" width="20" height="20" class="ml-1"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Magazine Section -->
+        <section id="magazine" class="py-16 bg-zinc-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">K-Culture 매거진</h2>
+                    <p class="text-zinc-600 max-w-2xl mx-auto">한국 문화와 트렌드에 대한 최신 소식과 인사이트</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Magazine 1 -->
+                    <article class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all-300">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Art in Seoul" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center text-sm text-zinc-500 mb-3">
+                                <span>트렌드 리포트</span>
+                                <span class="mx-2">•</span>
+                                <span>2023년 11월</span>
+                            </div>
+                            <h3 class="font-bold text-xl mb-3">서울의 예술 공간 탐방기</h3>
+                            <p class="text-zinc-600 mb-4">한국 현대 미술의 중심지, 서울의 갤러리와 미술관을 소개합니다.</p>
+                            <a href="#" class="text-primary font-medium text-sm hover:text-primary-dark">더 읽기</a>
+                        </div>
+                    </article>
+                    
+                    <!-- Magazine 2 -->
+                    <article class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all-300">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="K-Beauty Trends" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center text-sm text-zinc-500 mb-3">
+                                <span>뷰티 리포트</span>
+                                <span class="mx-2">•</span>
+                                <span>2023년 10월</span>
+                            </div>
+                            <h3 class="font-bold text-xl mb-3">2023 K-Beauty 트렌드 분석</h3>
+                            <p class="text-zinc-600 mb-4">글로벌 시장을 강타한 한국 뷰티 트렌드와 제품을 알아봅니다.</p>
+                            <a href="#" class="text-primary font-medium text-sm hover:text-primary-dark">더 읽기</a>
+                        </div>
+                    </article>
+                    
+                    <!-- Magazine 3 -->
+                    <article class="bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all-300">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="K-Pop Industry" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center text-sm text-zinc-500 mb-3">
+                                <span>문화 리포트</span>
+                                <span class="mx-2">•</span>
+                                <span>2023년 9월</span>
+                            </div>
+                            <h3 class="font-bold text-xl mb-3">K-Pop 글로벌 현황과 미래</h3>
+                            <p class="text-zinc-600 mb-4">전 세계를 사로잡은 K-Pop 산업의 성공 비결과 향후 전망을 분석합니다.</p>
+                            <a href="#" class="text-primary font-medium text-sm hover:text-primary-dark">더 읽기</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reservation Section -->
+        <section id="reservation" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">클래스 예약</h2>
+                    <p class="text-zinc-600">원하는 강좌를 선택하고 간편하게 예약하세요</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl border border-zinc-200 p-6 md:p-8 shadow-lg">
+                    <h3 class="font-bold text-xl mb-6">예약 정보 입력</h3>
+                    
+                    <form id="reservation-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-2">이름</label>
+                                <input type="text" id="reservation-name" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-2">이메일</label>
+                                <input type="email" id="reservation-email" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-2">강좌 선택</label>
+                            <select id="reservation-course" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                <option value="">강좌를 선택하세요</option>
+                                <option value="K-Pop 댄스 마스터클래스">K-Pop 댄스 마스터클래스 - ₩120,000</option>
+                                <option value="K-Beauty 스킨케어 워크숍">K-Beauty 스킨케어 워크숍 - ₩85,000</option>
+                                <option value="한국 전통 도예 클래스">한국 전통 도예 클래스 - ₩95,000</option>
+                                <option value="한국 전통 음악 체험">한국 전통 음악 체험 - ₩75,000</option>
+                                <option value="K-Food 요리 클래스">K-Food 요리 클래스 - ₩90,000</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-2">날짜</label>
+                                <input type="date" id="reservation-date" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-700 mb-2">시간</label>
+                                <select id="reservation-time" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    <option value="">시간 선택</option>
+                                    <option value="10:00">오전 10:00</option>
+                                    <option value="14:00">오후 2:00</option>
+                                    <option value="16:00">오후 4:00</option>
+                                    <option value="19:00">오후 7:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-700 mb-2">특별 요청사항 (선택)</label>
+                            <textarea id="reservation-notes" rows="3" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="reservation-agree" class="h-4 w-4 text-primary rounded focus:ring-primary" required>
+                            <label for="reservation-agree" class="ml-2 text-sm text-zinc-700">
+                                예약 조건 및 취소 정책에 동의합니다
+                            </label>
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition-all-300 text-lg">
+                                예약 완료하기
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-zinc-600">예약 확인은 이메일로 발송됩니다. 문의사항은 <a href="mailto:info@kai-culture.com" class="text-primary hover:underline">info@kai-culture.com</a>으로 연락주세요.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Locations Section -->
+        <section id="locations" class="py-16 bg-zinc-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">지점 안내</h2>
+                    <p class="text-zinc-600 max-w-2xl mx-auto">서울역을 비롯한 전국 주요 지점에서 만나보세요</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Location 1: Seoul Station -->
+                    <div class="bg-white rounded-xl p-6 border border-zinc-200 hover:shadow-lg transition-all-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <iconify-icon icon="mdi:train" class="text-primary" width="20" height="20"></iconify-icon>
+                            </div>
+                            <h3 class="font-bold text-xl">서울역 지점</h3>
+                        </div>
+                        <p class="text-zinc-600 mb-4">롯데ON과 협업한 플래그십 스토어. K-Pop과 K-Beauty 중심 프로그램 운영</p>
+                        <div class="text-sm text-zinc-500">
+                            <p class="flex items-center mb-1">
+                                <iconify-icon icon="mdi:map-marker" width="16" height="16" class="mr-2"></iconify-icon>
+                                서울특별시 용산구 한강대로 405
+                            </p>
+                            <p class="flex items-center">
+                                <iconify-icon icon="mdi:clock" width="16" height="16" class="mr-2"></iconify-icon>
+                                평일 10:00-20:00 / 주말 10:00-18:00
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Location 2: Gangnam -->
+                    <div class="bg-white rounded-xl p-6 border border-zinc-200 hover:shadow-lg transition-all-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center mr-3">
+                                <iconify-icon icon="mdi:city" class="text-accent" width="20" height="20"></iconify-icon>
+                            </div>
+                            <h3 class="font-bold text-xl">강남 지점</h3>
+                        </div>
+                        <p class="text-zinc-600 mb-4">K-Beauty와 K-에듀테크 중심 프로그램. 최신 시설과 전문 강사진</p>
+                        <div class="text-sm text-zinc-500">
+                            <p class="flex items-center mb-1">
+                                <iconify-icon icon="mdi:map-marker" width="16" height="16" class="mr-2"></iconify-icon>
+                                서울특별시 강남구 테헤란로 152
+                            </p>
+                            <p class="flex items-center">
+                                <iconify-icon icon="mdi:clock" width="16" height="16" class="mr-2"></iconify-icon>
+                                평일 9:00-21:00 / 주말 10:00-19:00
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Location 3: Busan -->
+                    <div class="bg-white rounded-xl p-6 border border-zinc-200 hover:shadow-lg transition-all-300">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 rounded-full bg-zinc-800/10 flex items-center justify-center mr-3">
+                                <iconify-icon icon="mdi:beach" class="text-zinc-800" width="20" height="20"></iconify-icon>
+                            </div>
+                            <h3 class="font-bold text-xl">부산 해운대 지점</h3>
+                        </div>
+                        <p class="text-zinc-600 mb-4">바다를 보며 즐기는 문화 체험. 관광객을 위한 단기 프로그램 운영</p>
+                        <div class="text-sm text-zinc-500">
+                            <p class="flex items-center mb-1">
+                                <iconify-icon icon="mdi:map-marker" width="16" height="16" class="mr-2"></iconify-icon>
+                                부산광역시 해운대구 해운대해변로 276
+                            </p>
+                            <p class="flex items-center">
+                                <iconify-icon icon="mdi:clock" width="16" height="16" class="mr-2"></iconify-icon>
+                                매일 9:00-20:00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Kai-Culture Academy 소개</h2>
+                    <p class="text-zinc-600 max-w-3xl mx-auto">롯데ON, 월드 K-Pop 센터, 리본 코리아와의 협력을 통해 한국 문화의 진수를 전달합니다</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="font-bold text-2xl mb-6">우리의 비전</h3>
+                        <p class="text-zinc-600 mb-6">
+                            Kai-Culture Academy는 단순한 교육 기관을 넘어 한국 문화를 체험하고 이해할 수 있는 플랫폼입니다. 
+                            K-Pop, K-Beauty, K-에듀테크를 중심으로 한 다양한 프로그램을 통해 전 세계인과 한국 문화를 연결합니다.
+                        </p>
+                        <p class="text-zinc-600 mb-8">
+                            서울역 플래그십 스토어를 시작으로 전국적으로 확장하며, 롯데ON의 유통망, 월드 K-Pop 센터의 네트워크, 
+                            리본 코리아의 K-Beauty 전문성을 결합한 독보적인 문화 경험을 제공합니다.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <div class="bg-primary/5 rounded-lg p-4">
+                                <p class="font-bold text-primary text-lg">120+</p>
+                                <p class="text-sm text-zinc-600">다양한 클래스</p>
+                            </div>
+                            <div class="bg-accent/5 rounded-lg p-4">
+                                <p class="font-bold text-accent text-lg">5,000+</p>
+                                <p class="text-sm text-zinc-600">수강생</p>
+                            </div>
+                            <div class="bg-zinc-800/5 rounded-lg p-4">
+                                <p class="font-bold text-zinc-800 text-lg">15+</p>
+                                <p class="text-sm text-zinc-600">전문 강사</p>
+                            </div>
+                            <div class="bg-rose-500/5 rounded-lg p-4">
+                                <p class="font-bold text-rose-500 text-lg">3</p>
+                                <p class="text-sm text-zinc-600">협력 기업</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="bg-gradient-to-br from-primary/10 to-accent/10 rounded-2xl p-8 h-full">
+                            <h3 class="font-bold text-2xl mb-6">협력 기관</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-center p-4 bg-white rounded-xl">
+                                    <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:store" class="text-primary" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">롯데ON</p>
+                                        <p class="text-sm text-zinc-600">유통망 및 공간 협력</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-white rounded-xl">
+                                    <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:music" class="text-accent" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">월드 K-Pop 센터</p>
+                                        <p class="text-sm text-zinc-600">K-Pop 프로그램 협력</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center p-4 bg-white rounded-xl">
+                                    <div class="w-12 h-12 rounded-lg bg-rose-500/10 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:spa" class="text-rose-500" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">리본 코리아</p>
+                                        <p class="text-sm text-zinc-600">K-Beauty 프로그램 협력</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center mb-6">
+                        <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-3">
+                            <span class="text-primary font-bold">K</span>
+                        </div>
+                        <span class="font-display text-xl font-semibold">Kai-Culture Academy</span>
+                    </div>
+                    <p class="text-zinc-400 mb-6 max-w-md">
+                        한국 문화의 진수를 전달하는 프리미엄 문화 아카데미. 
+                        K-Pop, K-Beauty, K-에듀테크를 중심으로 한 다양한 경험을 제공합니다.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-zinc-400 hover:text-white transition-all-300">
+                            <iconify-icon icon="mdi:instagram" width="24" height="24"></iconify-icon>
+                        </a>
+                        <a href="#" class="text-zinc-400 hover:text-white transition-all-300">
+                            <iconify-icon icon="mdi:youtube" width="24" height="24"></iconify-icon>
+                        </a>
+                        <a href="#" class="text-zinc-400 hover:text-white transition-all-300">
+                            <iconify-icon icon="mdi:facebook" width="24" height="24"></iconify-icon>
+                        </a>
+                        <a href="#" class="text-zinc-400 hover:text-white transition-all-300">
+                            <iconify-icon icon="mdi:twitter" width="24" height="24"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">빠른 링크</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#courses" class="text-zinc-400 hover:text-white transition-all-300">강좌 찾기</a></li>
+                        <li><a href="#reservation" class="text-zinc-400 hover:text-white transition-all-300">예약하기</a></li>
+                        <li><a href="#locations" class="text-zinc-400 hover:text-white transition-all-300">지점 안내</a></li>
+                        <li><a href="#magazine" class="text-zinc-400 hover:text-white transition-all-300">매거진</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-6">문의하기</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-zinc-400">
+                            <iconify-icon icon="mdi:phone" width="18" height="18" class="mr-2"></iconify-icon>
+                            <span>02-1234-5678</span>
+                        </li>
+                        <li class="flex items-center text-zinc-400">
+                            <iconify-icon icon="mdi:email" width="18" height="18" class="mr-2"></iconify-icon>
+                            <span>info@kai-culture.com</span>
+                        </li>
+                        <li class="flex items-center text-zinc-400">
+                            <iconify-icon icon="mdi:map-marker" width="18" height="18" class="mr-2"></iconify-icon>
+                            <span>서울시 용산구 한강대로 405</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-zinc-800 mt-12 pt-8 text-center text-zinc-500 text-sm">
+                <p>© 2023 Kai-Culture Academy. All rights reserved.</p>
+                <p class="mt-2">롯데ON, 월드 K-Pop 센터, 리본 코리아 협업 프로젝트</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-2xl">로그인</h3>
+                <button id="close-login-modal" class="text-zinc-400 hover:text-zinc-700">
+                    <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+                </button>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">이메일</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">비밀번호</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember-me" class="h-4 w-4 text-primary rounded focus:ring-primary">
+                        <label for="remember-me" class="ml-2 text-sm text-zinc-700">로그인 상태 유지</label>
+                    </div>
+                    <a href="#" class="text-sm text-primary hover:text-primary-dark">비밀번호 찾기</a>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition-all-300 mt-4">
+                    로그인
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-zinc-600 text-sm">계정이 없으신가요? <button id="switch-to-signup" class="text-primary font-medium hover:text-primary-dark">회원가입</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-2xl">회원가입</h3>
+                <button id="close-signup-modal" class="text-zinc-400 hover:text-zinc-700">
+                    <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+                </button>
+            </div>
+            
+            <form id="signup-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-700 mb-2">이름</label>
+                        <input type="text" id="signup-first-name" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-700 mb-2">성</label>
+                        <input type="text" id="signup-last-name" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">이메일</label>
+                    <input type="email" id="signup-email" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">비밀번호</label>
+                    <input type="password" id="signup-password" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    <p class="text-xs text-zinc-500 mt-1">최소 8자 이상, 영문과 숫자 포함</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">비밀번호 확인</label>
+                    <input type="password" id="signup-password-confirm" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" id="signup-agree" class="h-4 w-4 text-primary rounded focus:ring-primary" required>
+                    <label for="signup-agree" class="ml-2 text-sm text-zinc-700">
+                        <a href="#" class="text-primary hover:underline">이용약관</a> 및 <a href="#" class="text-primary hover:underline">개인정보처리방침</a>에 동의합니다
+                    </label>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-dark transition-all-300 mt-4">
+                    회원가입
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-zinc-600 text-sm">이미 계정이 있으신가요? <button id="switch-to-login" class="text-primary font-medium hover:text-primary-dark">로그인</button></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reservation Success Modal -->
+    <div id="reservation-success-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-8 text-center">
+            <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <iconify-icon icon="mdi:check" class="text-green-600" width="32" height="32"></iconify-icon>
+            </div>
+            <h3 class="font-bold text-2xl mb-4">예약 완료!</h3>
+            <p class="text-zinc-600 mb-6">강좌 예약이 완료되었습니다. 예약 확인 이메일을 발송했습니다.</p>
+            <button id="close-reservation-success-modal" class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-dark transition-all-300">
+                확인
+            </button>
+        </div>
+    </div>
+    
+    <!-- Admin Panel (hidden by default, only for admin users) -->
+    <div id="admin-panel" class="hidden fixed inset-0 bg-white z-50 overflow-y-auto">
+        <div class="min-h-screen">
+            <!-- Admin Header -->
+            <div class="bg-zinc-900 text-white p-6">
+                <div class="max-w-7xl mx-auto flex justify-between items-center">
+                    <div class="flex items-center">
+                        <iconify-icon icon="mdi:shield-account" width="32" height="32" class="mr-3"></iconify-icon>
+                        <h2 class="text-2xl font-bold">Kai-Culture 관리자 패널</h2>
+                    </div>
+                    <button id="close-admin-panel" class="text-white hover:text-zinc-300">
+                        <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Admin Content -->
+            <div class="max-w-7xl mx-auto p-6">
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4">회원 관리</h3>
+                    <div class="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+                        <div class="p-4 border-b border-zinc-200 flex justify-between items-center">
+                            <p class="font-medium">총 회원 수: <span id="total-members">0</span>명</p>
+                            <button id="export-members-btn" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark flex items-center">
+                                <iconify-icon icon="mdi:download" width="16" height="16" class="mr-2"></iconify-icon>
+                                회원 명부 엑셀 다운로드
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="border-b border-zinc-200">
+                                            <th class="text-left py-3 px-4">ID</th>
+                                            <th class="text-left py-3 px-4">이름</th>
+                                            <th class="text-left py-3 px-4">이메일</th>
+                                            <th class="text-left py-3 px-4">가입일</th>
+                                            <th class="text-left py-3 px-4">예약 수</th>
+                                            <th class="text-left py-3 px-4">상태</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="members-table-body">
+                                        <!-- Members will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Reservations Stats -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">예약 통계</h3>
+                        <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-zinc-50 rounded-lg p-4">
+                                    <p class="text-2xl font-bold text-primary" id="total-reservations">0</p>
+                                    <p class="text-sm text-zinc-600">총 예약 수</p>
+                                </div>
+                                <div class="bg-zinc-50 rounded-lg p-4">
+                                    <p class="text-2xl font-bold text-accent" id="active-reservations">0</p>
+                                    <p class="text-sm text-zinc-600">활성 예약</p>
+                                </div>
+                            </div>
+                            <div class="h-64" id="reservations-chart"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Popular Courses -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">인기 강좌</h3>
+                        <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">K-Pop 댄스 마스터클래스</span>
+                                        <span class="text-sm font-bold text-primary">42명</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">K-Beauty 스킨케어 워크숍</span>
+                                        <span class="text-sm font-bold text-primary">38명</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 63%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">한국 전통 도예 클래스</span>
+                                        <span class="text-sm font-bold text-primary">29명</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 48%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">K-Food 요리 클래스</span>
+                                        <span class="text-sm font-bold text-primary">25명</span>
+                                    </div>
+                                    <div class="w-full bg-zinc-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 42%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 다국어 지원 데이터
+        const translations = {
+            ko: {
+                // Navigation
+                "home": "홈",
+                "courses": "강좌",
+                "magazine": "매거진",
+                "reservation": "예약",
+                "locations": "지점",
+                "about": "소개",
+                "login": "로그인",
+                "signup": "회원가입",
+                "dashboard": "대시보드",
+                "my-reservations": "내 예약",
+                "profile": "프로필",
+                "logout": "로그아웃",
+                
+                // Hero
+                "hero-title": "일상에 <span class='gradient-text'>예술</span>을 담다",
+                "hero-subtitle": "Kai-Culture Academy는 롯데ON과 함께하는 프리미엄 문화 아카데미입니다. K-Pop, K-Beauty, K-에듀테크를 중심으로 한 특별한 경험을 제공합니다.",
+                "explore-courses": "강좌 탐색하기",
+                "book-now": "지금 예약하기",
+                
+                // Courses
+                "popular-courses": "인기 강좌",
+                "courses-subtitle": "K-Pop, K-Beauty, 한국 문화를 체험할 수 있는 다양한 프로그램",
+                "view-all-courses": "모든 강좌 보기",
+                
+                // Magazine
+                "magazine-title": "K-Culture 매거진",
+                "magazine-subtitle": "한국 문화와 트렌드에 대한 최신 소식과 인사이트",
+                
+                // Reservation
+                "reservation-title": "클래스 예약",
+                "reservation-subtitle": "원하는 강좌를 선택하고 간편하게 예약하세요",
+                "name": "이름",
+                "email": "이메일",
+                "select-course": "강좌 선택",
+                "select-course-placeholder": "강좌를 선택하세요",
+                "date": "날짜",
+                "time": "시간",
+                "special-requests": "특별 요청사항 (선택)",
+                "agree-terms": "예약 조건 및 취소 정책에 동의합니다",
+                "complete-reservation": "예약 완료하기",
+                "reservation-confirmation": "예약 확인은 이메일로 발송됩니다. 문의사항은",
+                "contact-email": "으로 연락주세요.",
+                
+                // Locations
+                "locations-title": "지점 안내",
+                "locations-subtitle": "서울역을 비롯한 전국 주요 지점에서 만나보세요",
+                
+                // About
+                "about-title": "Kai-Culture Academy 소개",
+                "about-subtitle": "롯데ON, 월드 K-Pop 센터, 리본 코리아와의 협력을 통해 한국 문화의 진수를 전달합니다",
+                "our-vision": "우리의 비전",
+                "vision-text-1": "Kai-Culture Academy는 단순한 교육 기관을 넘어 한국 문화를 체험하고 이해할 수 있는 플랫폼입니다.",
+                "vision-text-2": "서울역 플래그십 스토어를 시작으로 전국적으로 확장하며, 롯데ON의 유통망, 월드 K-Pop 센터의 네트워크, 리본 코리아의 K-Beauty 전문성을 결합한 독보적인 문화 경험을 제공합니다.",
+                "partner-institutions": "협력 기관",
+                "classes": "다양한 클래스",
+                "students": "수강생",
+                "instructors": "전문 강사",
+                "partners": "협력 기업",
+                
+                // Footer
+                "quick-links": "빠른 링크",
+                "find-courses": "강좌 찾기",
+                "make-reservation": "예약하기",
+                "location-info": "지점 안내",
+                "contact-us": "문의하기",
+                
+                // Admin
+                "admin-panel": "Kai-Culture 관리자 패널",
+                "member-management": "회원 관리",
+                "total-members": "총 회원 수",
+                "export-members": "회원 명부 엑셀 다운로드",
+                "reservation-stats": "예약 통계",
+                "total-reservations": "총 예약 수",
+                "active-reservations": "활성 예약",
+                "popular-courses-stats": "인기 강좌"
+            },
+            en: {
+                // Navigation
+                "home": "Home",
+                "courses": "Courses",
+                "magazine": "Magazine",
+                "reservation": "Reservation",
+                "locations": "Locations",
+                "about": "About",
+                "login": "Login",
+                "signup": "Sign Up",
+                "dashboard": "Dashboard",
+                "my-reservations": "My Reservations",
+                "profile": "Profile",
+                "logout": "Logout",
+                
+                // Hero
+                "hero-title": "Infuse Art into <span class='gradient-text'>Daily Life</span>",
+                "hero-subtitle": "Kai-Culture Academy is a premium culture academy in collaboration with LotteON. We offer special experiences centered around K-Pop, K-Beauty, and K-Edutech.",
+                "explore-courses": "Explore Courses",
+                "book-now": "Book Now",
+                
+                // Courses
+                "popular-courses": "Popular Courses",
+                "courses-subtitle": "Various programs to experience K-Pop, K-Beauty, and Korean culture",
+                "view-all-courses": "View All Courses",
+                
+                // Magazine
+                "magazine-title": "K-Culture Magazine",
+                "magazine-subtitle": "Latest news and insights about Korean culture and trends",
+                
+                // Reservation
+                "reservation-title": "Class Reservation",
+                "reservation-subtitle": "Select your desired course and book easily",
+                "name": "Name",
+                "email": "Email",
+                "select-course": "Select Course",
+                "select-course-placeholder": "Select a course",
+                "date": "Date",
+                "time": "Time",
+                "special-requests": "Special Requests (Optional)",
+                "agree-terms": "I agree to the booking conditions and cancellation policy",
+                "complete-reservation": "Complete Reservation",
+                "reservation-confirmation": "Reservation confirmation will be sent by email. For inquiries, please contact",
+                "contact-email": ".",
+                
+                // Locations
+                "locations-title": "Locations",
+                "locations-subtitle": "Meet us at major locations nationwide including Seoul Station",
+                
+                // About
+                "about-title": "About Kai-Culture Academy",
+                "about-subtitle": "Delivering the essence of Korean culture through collaboration with LotteON, World K-Pop Center, and Ribbon Korea",
+                "our-vision": "Our Vision",
+                "vision-text-1": "Kai-Culture Academy is more than an educational institution; it's a platform to experience and understand Korean culture.",
+                "vision-text-2": "Starting with the flagship store at Seoul Station and expanding nationwide, we provide a unique cultural experience combining LotteON's distribution network, World K-Pop Center's network, and Ribbon Korea's K-Beauty expertise.",
+                "partner-institutions": "Partner Institutions",
+                "classes": "Various Classes",
+                "students": "Students",
+                "instructors": "Instructors",
+                "partners": "Partner Companies",
+                
+                // Footer
+                "quick-links": "Quick Links",
+                "find-courses": "Find Courses",
+                "make-reservation": "Make Reservation",
+                "location-info": "Location Info",
+                "contact-us": "Contact Us",
+                
+                // Admin
+                "admin-panel": "Kai-Culture Admin Panel",
+                "member-management": "Member Management",
+                "total-members": "Total Members",
+                "export-members": "Export Member List to Excel",
+                "reservation-stats": "Reservation Statistics",
+                "total-reservations": "Total Reservations",
+                "active-reservations": "Active Reservations",
+                "popular-courses-stats": "Popular Courses"
+            },
+            zh: {
+                // Navigation
+                "home": "首页",
+                "courses": "课程",
+                "magazine": "杂志",
+                "reservation": "预约",
+                "locations": "地点",
+                "about": "关于",
+                "login": "登录",
+                "signup": "注册",
+                "dashboard": "仪表板",
+                "my-reservations": "我的预约",
+                "profile": "个人资料",
+                "logout": "登出",
+                
+                // Hero
+                "hero-title": "将<span class='gradient-text'>艺术</span>融入日常生活",
+                "hero-subtitle": "Kai-Culture Academy是与乐天ON合作的高级文化学院。我们提供以K-Pop、K-Beauty和K-Edutech为中心的特殊体验。",
+                "explore-courses": "探索课程",
+                "book-now": "立即预约",
+                
+                // Courses
+                "popular-courses": "热门课程",
+                "courses-subtitle": "体验K-Pop、K-Beauty和韩国文化的各种项目",
+                "view-all-courses": "查看所有课程",
+                
+                // Magazine
+                "magazine-title": "K-Culture杂志",
+                "magazine-subtitle": "关于韩国文化和趋势的最新新闻和见解",
+                
+                // Reservation
+                "reservation-title": "课程预约",
+                "reservation-subtitle": "选择您想要的课程并轻松预订",
+                "name": "姓名",
+                "email": "电子邮件",
+                "select-course": "选择课程",
+                "select-course-placeholder": "选择课程",
+                "date": "日期",
+                "time": "时间",
+                "special-requests": "特殊要求（可选）",
+                "agree-terms": "我同意预订条件和取消政策",
+                "complete-reservation": "完成预约",
+                "reservation-confirmation": "预约确认将通过电子邮件发送。如有疑问，请联系",
+                "contact-email": "。",
+                
+                // Locations
+                "locations-title": "地点",
+                "locations-subtitle": "在全国主要地点，包括首尔站，与我们见面",
+                
+                // About
+                "about-title": "关于Kai-Culture Academy",
+                "about-subtitle": "通过与乐天ON、世界K-Pop中心和Ribbon Korea的合作，传递韩国文化的精髓",
+                "our-vision": "我们的愿景",
+                "vision-text-1": "Kai-Culture Academy不仅仅是一个教育机构；它是一个体验和理解韩国文化的平台。",
+                "vision-text-2": "从首尔站的旗舰店开始，扩展到全国，我们提供独特的文化体验，结合了乐天ON的分销网络、世界K-Pop中心的网络和Ribbon Korea的K-Beauty专业知识。",
+                "partner-institutions": "合作机构",
+                "classes": "多样课程",
+                "students": "学员",
+                "instructors": "讲师",
+                "partners": "合作企业",
+                
+                // Footer
+                "quick-links": "快速链接",
+                "find-courses": "查找课程",
+                "make-reservation": "预约",
+                "location-info": "地点信息",
+                "contact-us": "联系我们",
+                
+                // Admin
+                "admin-panel": "Kai-Culture管理面板",
+                "member-management": "会员管理",
+                "total-members": "总会员数",
+                "export-members": "导出会员列表到Excel",
+                "reservation-stats": "预约统计",
+                "total-reservations": "总预约数",
+                "active-reservations": "活跃预约",
+                "popular-courses-stats": "热门课程"
+            }
+        };
+
+        // 현재 언어 설정
+        let currentLanguage = 'ko';
+        
+        // 페이지 상태 관리
+        let currentUser = null;
+        let isAdmin = false;
+        
+        // 모의 데이터
+        const mockMembers = [
+            { id: 1, firstName: "지민", lastName: "김", email: "jimin.kim@example.com", joinDate: "2023-01-15", reservations: 5, status: "활성" },
+            { id: 2, firstName: "수현", lastName: "이", email: "soohyun.lee@example.com", joinDate: "2023-02-20", reservations: 3, status: "활성" },
+            { id: 3, firstName: "민준", lastName: "박", email: "minjun.park@example.com", joinDate: "2023-03-10", reservations: 7, status: "활성" },
+            { id: 4, firstName: "서연", lastName: "최", email: "seoyeon.choi@example.com", joinDate: "2023-04-05", reservations: 2, status: "활성" },
+            { id: 5, firstName: "도윤", lastName: "정", email: "doyun.jung@example.com", joinDate: "2023-05-12", reservations: 4, status: "활성" },
+            { id: 6, firstName: "하준", lastName: "강", email: "hajun.kang@example.com", joinDate: "2023-06-18", reservations: 1, status: "활성" },
+            { id: 7, firstName: "지우", lastName: "조", email: "jiwoo.cho@example.com", joinDate: "2023-07-22", reservations: 6, status: "활성" },
+            { id: 8, firstName: "서준", lastName: "윤", email: "seojun.yoon@example.com", joinDate: "2023-08-30", reservations: 3, status: "활성" }
+        ];
+        
+        const mockReservations = [
+            { month: "1월", count: 12 },
+            { month: "2월", count: 18 },
+            { month: "3월", count: 22 },
+            { month: "4월", count: 25 },
+            { month: "5월", count: 30 },
+            { month: "6월", count: 28 },
+            { month: "7월", count: 35 },
+            { month: "8월", count: 42 },
+            { month: "9월", count: 38 },
+            { month: "10월", count: 45 },
+            { month: "11월", count: 40 },
+            { month: "12월", count: 50 }
+        ];
+
+        // DOM이 로드되면 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+        
+        function initApp() {
+            // 이벤트 리스너 설정
+            setupEventListeners();
+            
+            // 모의 사용자 데이터 로드 (로컬 스토리지에서)
+            loadUserData();
+            
+            // 언어 설정
+            updateLanguage(currentLanguage);
+            
+            // 관리자 패널 초기화
+            initAdminPanel();
+        }
+        
+        function setupEventListeners() {
+            // 로그인 버튼
+            document.getElementById('login-btn').addEventListener('click', showLoginModal);
+            document.getElementById('mobile-login-btn').addEventListener('click', showLoginModal);
+            
+            // 회원가입 버튼
+            document.getElementById('signup-btn').addEventListener('click', showSignupModal);
+            document.getElementById('mobile-signup-btn').addEventListener('click', showSignupModal);
+            
+            // 모달 닫기 버튼
+            document.getElementById('close-login-modal').addEventListener('click', hideLoginModal);
+            document.getElementById('close-signup-modal').addEventListener('click', hideSignupModal);
+            document.getElementById('close-reservation-success-modal').addEventListener('click', hideReservationSuccessModal);
+            document.getElementById('close-admin-panel').addEventListener('click', hideAdminPanel);
+            
+            // 모달 전환
+            document.getElementById('switch-to-signup').addEventListener('click', function() {
+                hideLoginModal();
+                showSignupModal();
+            });
+            
+            document.getElementById('switch-to-login').addEventListener('click', function() {
+                hideSignupModal();
+                showLoginModal();
+            });
+            
+            // 폼 제출
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('signup-form').addEventListener('submit', handleSignup);
+            document.getElementById('reservation-form').addEventListener('submit', handleReservation);
+            
+            // 로그아웃
+            document.getElementById('logout-btn').addEventListener('click', handleLogout);
+            
+            // 예약 버튼 (강좌 카드)
+            document.querySelectorAll('.reserve-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseName = this.getAttribute('data-course');
+                    showReservationModalWithCourse(courseName);
+                });
+            });
+            
+            // 회원 명부 다운로드
+            document.getElementById('export-members-btn').addEventListener('click', exportMembersToExcel);
+            
+            // 모바일 메뉴
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+            
+            // 사용자 메뉴
+            document.getElementById('user-menu-button').addEventListener('click', toggleUserDropdown);
+            
+            // 언어 선택 드롭다운
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('#language-dropdown') && !event.target.closest('.fixed.bottom-6.right-6 button')) {
+                    document.getElementById('language-dropdown').classList.add('hidden');
+                }
+            });
+        }
+        
+        // 언어 변경 함수
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            updateLanguage(lang);
+            toggleLanguageDropdown();
+        }
+        
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('language-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+        
+        function updateLanguage(lang) {
+            const data = translations[lang];
+            
+            // 네비게이션 업데이트
+            document.querySelectorAll('nav a').forEach((link, index) => {
+                const keys = ["home", "courses", "magazine", "reservation", "locations", "about"];
+                if (keys[index]) {
+                    link.textContent = data[keys[index]];
+                }
+            });
+            
+            // 모바일 네비게이션 업데이트
+            document.querySelectorAll('#mobile-menu a').forEach((link, index) => {
+                const keys = ["home", "courses", "magazine", "reservation", "locations", "about", "login"];
+                if (keys[index]) {
+                    link.textContent = data[keys[index]];
+                }
+            });
+            
+            // 버튼 텍스트 업데이트
+            document.getElementById('login-btn').textContent = data.login;
+            document.getElementById('signup-btn').textContent = data.signup;
+            document.getElementById('mobile-login-btn').textContent = data.login;
+            document.getElementById('mobile-signup-btn').textContent = data.signup;
+            
+            // 히어로 섹션 업데이트
+            document.querySelector('#home h1').innerHTML = data['hero-title'];
+            document.querySelector('#home p.text-lg').textContent = data['hero-subtitle'];
+            document.querySelector('#home a.bg-primary').textContent = data['explore-courses'];
+            document.querySelector('#home a.border-primary').textContent = data['book-now'];
+            
+            // 강좌 섹션 업데이트
+            document.querySelector('#courses h2').textContent = data['popular-courses'];
+            document.querySelector('#courses p.text-zinc-600').textContent = data['courses-subtitle'];
+            document.querySelector('#courses a.inline-flex').innerHTML = `${data['view-all-courses']} <iconify-icon icon="mdi:chevron-right" width="20" height="20" class="ml-1"></iconify-icon>`;
+            
+            // 매거진 섹션 업데이트
+            document.querySelector('#magazine h2').textContent = data['magazine-title'];
+            document.querySelector('#magazine p.text-zinc-600').textContent = data['magazine-subtitle'];
+            
+            // 예약 섹션 업데이트
+            document.querySelector('#reservation h2').textContent = data['reservation-title'];
+            document.querySelector('#reservation p.text-zinc-600').textContent = data['reservation-subtitle'];
+            document.querySelector('#reservation-form label[for="reservation-name"]').textContent = data.name;
+            document.querySelector('#reservation-form label[for="reservation-email"]').textContent = data.email;
+            document.querySelector('#reservation-form label[for="reservation-course"]').textContent = data['select-course'];
+            document.querySelector('#reservation-course option:first-child').textContent = data['select-course-placeholder'];
+            document.querySelector('#reservation-form label[for="reservation-date"]').textContent = data.date;
+            document.querySelector('#reservation-form label[for="reservation-time"]').textContent = data.time;
+            document.querySelector('#reservation-form label[for="reservation-notes"]').textContent = data['special-requests'];
+            document.querySelector('#reservation-form label[for="reservation-agree"]').textContent = data['agree-terms'];
+            document.querySelector('#reservation-form button[type="submit"]').textContent = data['complete-reservation'];
+            document.querySelector('#reservation .text-center p').innerHTML = `${data['reservation-confirmation']} <a href="mailto:info@kai-culture.com" class="text-primary hover:underline">info@kai-culture.com</a>${data['contact-email']}`;
+            
+            // 지점 섹션 업데이트
+            document.querySelector('#locations h2').textContent = data['locations-title'];
+            document.querySelector('#locations p.text-zinc-600').textContent = data['locations-subtitle'];
+            
+            // 소개 섹션 업데이트
+            document.querySelector('#about h2').textContent = data['about-title'];
+            document.querySelector('#about p.text-zinc-600').textContent = data['about-subtitle'];
+            document.querySelector('#about h3.font-bold.text-2xl.mb-6').textContent = data['our-vision'];
+            document.querySelector('#about p.text-zinc-600.mb-6').textContent = data['vision-text-1'];
+            document.querySelector('#about p.text-zinc-600.mb-8').textContent = data['vision-text-2'];
+            document.querySelector('#about .bg-gradient-to-br h3').textContent = data['partner-institutions'];
+            document.querySelectorAll('#about .bg-primary\\/5 p.text-sm')[0].textContent = data.classes;
+            document.querySelectorAll('#about .bg-accent\\/5 p.text-sm')[0].textContent = data.students;
+            document.querySelectorAll('#about .bg-zinc-800\\/5 p.text-sm')[0].textContent = data.instructors;
+            document.querySelectorAll('#about .bg-rose-500\\/5 p.text-sm')[0].textContent = data.partners;
+            
+            // 푸터 업데이트
+            document.querySelectorAll('footer h4')[0].textContent = data['quick-links'];
+            document.querySelectorAll('footer ul.space-y-3 a')[0].textContent = data['find-courses'];
+            document.querySelectorAll('footer ul.space-y-3 a')[1].textContent = data['make-reservation'];
+            document.querySelectorAll('footer ul.space-y-3 a')[2].textContent = data['location-info'];
+            document.querySelectorAll('footer h4')[1].textContent = data['contact-us'];
+            
+            // 관리자 패널 업데이트
+            document.querySelector('#admin-panel h2').textContent = data['admin-panel'];
+            document.querySelector('#admin-panel h3.text-xl').textContent = data['member-management'];
+            document.querySelector('#admin-panel p.font-medium').innerHTML = `${data['total-members']}: <span id="total-members">0</span>${lang === 'en' ? '' : '명'}`;
+            document.querySelector('#export-members-btn').innerHTML = `<iconify-icon icon="mdi:download" width="16" height="16" class="mr-2"></iconify-icon>${data['export-members']}`;
+            document.querySelectorAll('#admin-panel h3.text-xl')[1].textContent = data['reservation-stats'];
+            document.querySelectorAll('.bg-zinc-50.rounded-lg p.text-sm')[0].textContent = data['total-reservations'];
+            document.querySelectorAll('.bg-zinc-50.rounded-lg p.text-sm')[1].textContent = data['active-reservations'];
+            document.querySelectorAll('#admin-panel h3.text-xl')[2].textContent = data['popular-courses-stats'];
+            
+            // 테이블 헤더 업데이트
+            const tableHeaders = document.querySelectorAll('#admin-panel th');
+            if (tableHeaders.length >= 6) {
+                tableHeaders[0].textContent = "ID";
+                tableHeaders[1].textContent = lang === 'en' ? "Name" : lang === 'zh' ? "姓名" : "이름";
+                tableHeaders[2].textContent = lang === 'en' ? "Email" : lang === 'zh' ? "电子邮件" : "이메일";
+                tableHeaders[3].textContent = lang === 'en' ? "Join Date" : lang === 'zh' ? "加入日期" : "가입일";
+                tableHeaders[4].textContent = lang === 'en' ? "Reservations" : lang === 'zh' ? "预约数" : "예약 수";
+                tableHeaders[5].textContent = lang === 'en' ? "Status" : lang === 'zh' ? "状态" : "상태";
+            }
+            
+            // 로그인 모달 업데이트
+            document.querySelector('#login-modal h3').textContent = data.login;
+            document.querySelector('#login-form label[for="login-email"]').textContent = data.email;
+            document.querySelector('#login-form label[for="login-password"]').textContent = lang === 'en' ? "Password" : lang === 'zh' ? "密码" : "비밀번호";
+            document.querySelector('#login-form label[for="remember-me"]').textContent = lang === 'en' ? "Remember me" : lang === 'zh' ? "记住我" : "로그인 상태 유지";
+            document.querySelector('#login-form a.text-sm').textContent = lang === 'en' ? "Forgot password?" : lang === 'zh' ? "忘记密码？" : "비밀번호 찾기";
+            document.querySelector('#login-form button[type="submit"]').textContent = data.login;
+            document.querySelector('#login-modal .text-center p').innerHTML = `${lang === 'en' ? "Don't have an account?" : lang === 'zh' ? "还没有账户？" : "계정이 없으신가요?"} <button id="switch-to-signup" class="text-primary font-medium hover:text-primary-dark">${data.signup}</button>`;
+            
+            // 회원가입 모달 업데이트
+            document.querySelector('#signup-modal h3').textContent = data.signup;
+            document.querySelector('#signup-form label[for="signup-first-name"]').textContent = lang === 'en' ? "First Name" : lang === 'zh' ? "名字" : "이름";
+            document.querySelector('#signup-form label[for="signup-last-name"]').textContent = lang === 'en' ? "Last Name" : lang === 'zh' ? "姓氏" : "성";
+            document.querySelector('#signup-form label[for="signup-email"]').textContent = data.email;
+            document.querySelector('#signup-form label[for="signup-password"]').textContent = lang === 'en' ? "Password" : lang === 'zh' ? "密码" : "비밀번호";
+            document.querySelector('#signup-form p.text-xs').textContent = lang === 'en' ? "Minimum 8 characters, including letters and numbers" : lang === 'zh' ? "至少8个字符，包含字母和数字" : "최소 8자 이상, 영문과 숫자 포함";
+            document.querySelector('#signup-form label[for="signup-password-confirm"]').textContent = lang === 'en' ? "Confirm Password" : lang === 'zh' ? "确认密码" : "비밀번호 확인";
+            document.querySelector('#signup-form label[for="signup-agree"]').innerHTML = `${lang === 'en' ? "I agree to the" : lang === 'zh' ? "我同意" : ""} <a href="#" class="text-primary hover:underline">${lang === 'en' ? "Terms of Service" : lang === 'zh' ? "服务条款" : "이용약관"}</a> ${lang === 'en' ? "and" : lang === 'zh' ? "和" : "및"} <a href="#" class="text-primary hover:underline">${lang === 'en' ? "Privacy Policy" : lang === 'zh' ? "隐私政策" : "개인정보처리방침"}</a>${lang === 'ko' ? "에 동의합니다" : lang === 'zh' ? "" : ""}`;
+            document.querySelector('#signup-form button[type="submit"]').textContent = data.signup;
+            document.querySelector('#signup-modal .text-center p').innerHTML = `${lang === 'en' ? "Already have an account?" : lang === 'zh' ? "已有账户？" : "이미 계정이 있으신가요?"} <button id="switch-to-login" class="text-primary font-medium hover:text-primary-dark">${data.login}</button>`;
+            
+            // 사용자 메뉴 업데이트
+            document.querySelectorAll('#user-dropdown a')[0].textContent = data.dashboard;
+            document.querySelectorAll('#user-dropdown a')[1].textContent = data['my-reservations'];
+            document.querySelectorAll('#user-dropdown a')[2].textContent = data.profile;
+            document.getElementById('logout-btn').textContent = data.logout;
+        }
+        
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+        
+        function hideLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+        }
+        
+        function showSignupModal() {
+            document.getElementById('signup-modal').classList.remove('hidden');
+        }
+        
+        function hideSignupModal() {
+            document.getElementById('signup-modal').classList.add('hidden');
+        }
+        
+        function showReservationModalWithCourse(courseName) {
+            document.getElementById('reservation-course').value = courseName;
+            document.getElementById('reservation').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function hideReservationSuccessModal() {
+            document.getElementById('reservation-success-modal').classList.add('hidden');
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            renderAdminPanel();
+        }
+        
+        function hideAdminPanel() {
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+        
+        function toggleUserDropdown() {
+            document.getElementById('user-dropdown').classList.toggle('hidden');
+        }
+        
+        function loadUserData() {
+            const savedUser = localStorage.getItem('kaiUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+        }
+        
+        function saveUserData(user) {
+            localStorage.setItem('kaiUser', JSON.stringify(user));
+        }
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // 간단한 모의 인증
+            if (email && password) {
+                // 관리자 계정 체크 (간단한 모의)
+                if (email === 'admin@kai.com' && password === 'admin123') {
+                    isAdmin = true;
+                    currentUser = {
+                        firstName: '관리자',
+                        lastName: '',
+                        email: email,
+                        isAdmin: true
+                    };
+                } else {
+                    isAdmin = false;
+                    currentUser = {
+                        firstName: '사용자',
+                        lastName: '',
+                        email: email,
+                        isAdmin: false
+                    };
+                }
+                
+                saveUserData(currentUser);
+                updateUIForLoggedInUser();
+                hideLoginModal();
+                
+                // 관리자인 경우 관리자 패널 표시
+                if (isAdmin) {
+                    setTimeout(() => {
+                        showAdminPanel();
+                    }, 500);
+                }
+                
+                showNotification('로그인되었습니다.', 'success');
+            } else {
+                showNotification('이메일과 비밀번호를 입력해주세요.', 'error');
+            }
+        }
+        
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('signup-first-name').value;
+            const lastName = document.getElementById('signup-last-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-password-confirm').value;
+            
+            if (password !== confirmPassword) {
+                showNotification('비밀번호가 일치하지 않습니다.', 'error');
+                return;
+            }
+            
+            if (firstName && lastName && email && password) {
+                currentUser = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    isAdmin: false
+                };
+                
+                saveUserData(currentUser);
+                updateUIForLoggedInUser();
+                hideSignupModal();
+                
+                showNotification('회원가입이 완료되었습니다.', 'success');
+            } else {
+                showNotification('모든 필드를 입력해주세요.', 'error');
+            }
+        }
+        
+        function handleLogout() {
+            currentUser = null;
+            isAdmin = false;
+            localStorage.removeItem('kaiUser');
+            updateUIForLoggedOutUser();
+            hideAdminPanel();
+            
+            showNotification('로그아웃되었습니다.', 'success');
+        }
+        
+        function handleReservation(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('예약하려면 로그인이 필요합니다.', 'error');
+                showLoginModal();
+                return;
+            }
+            
+            const name = document.getElementById('reservation-name').value;
+            const email = document.getElementById('reservation-email').value;
+            const course = document.getElementById('reservation-course').value;
+            const date = document.getElementById('reservation-date').value;
+            const time = document.getElementById('reservation-time').value;
+            
+            if (!name || !email || !course || !date || !time) {
+                showNotification('필수 정보를 모두 입력해주세요.', 'error');
+                return;
+            }
+            
+            // 예약 성공 모달 표시
+            document.getElementById('reservation-success-modal').classList.remove('hidden');
+            
+            // 폼 초기화
+            document.getElementById('reservation-form').reset();
+            
+            // 관리자 패널이 열려있으면 업데이트
+            if (document.getElementById('admin-panel').classList.contains('hidden') === false) {
+                renderAdminPanel();
+            }
+            
+            showNotification('예약이 완료되었습니다.', 'success');
+        }
+        
+        function updateUIForLoggedInUser() {
+            // 로그인/회원가입 버튼 숨기기
+            document.getElementById('login-btn').classList.add('hidden');
+            document.getElementById('signup-btn').classList.add('hidden');
+            document.getElementById('mobile-login-btn').classList.add('hidden');
+            document.getElementById('mobile-signup-btn').classList.add('hidden');
+            
+            // 사용자 메뉴 표시
+            document.getElementById('user-menu').classList.remove('hidden');
+            document.getElementById('username').textContent = currentUser.firstName;
+            
+            // 모바일 메뉴에서도 로그인/회원가입 숨기기
+            const mobileAuthSection = document.querySelector('#mobile-menu .pt-2');
+            if (mobileAuthSection) {
+                mobileAuthSection.classList.add('hidden');
+            }
+        }
+        
+        function updateUIForLoggedOutUser() {
+            // 로그인/회원가입 버튼 표시
+            document.getElementById('login-btn').classList.remove('hidden');
+            document.getElementById('signup-btn').classList.remove('hidden');
+            document.getElementById('mobile-login-btn').classList.remove('hidden');
+            document.getElementById('mobile-signup-btn').classList.remove('hidden');
+            
+            // 사용자 메뉴 숨기기
+            document.getElementById('user-menu').classList.add('hidden');
+            
+            // 모바일 메뉴에서도 로그인/회원가입 표시
+            const mobileAuthSection = document.querySelector('#mobile-menu .pt-2');
+            if (mobileAuthSection) {
+                mobileAuthSection.classList.remove('hidden');
+            }
+        }
+        
+        function initAdminPanel() {
+            // 관리자 패널 초기화
+            if (currentUser && currentUser.isAdmin) {
+                // 관리자 링크 추가 (실제로는 숨겨진 관리자 링크나 별도 경로로 접근)
+                // 여기서는 사용자 메뉴에 관리자 링크 추가
+                const userDropdown = document.getElementById('user-dropdown');
+                const adminLink = document.createElement('a');
+                adminLink.href = '#';
+                adminLink.className = 'block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50';
+                adminLink.innerHTML = '<iconify-icon icon="mdi:shield-account" width="16" height="16" class="mr-2"></iconify-icon>관리자 패널';
+                adminLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showAdminPanel();
+                });
+                
+                const divider = document.createElement('div');
+                divider.className = 'border-t border-zinc-200 my-1';
+                
+                userDropdown.insertBefore(divider, userDropdown.firstChild);
+                userDropdown.insertBefore(adminLink, userDropdown.firstChild);
+            }
+        }
+        
+        function renderAdminPanel() {
+            // 회원 테이블 렌더링
+            const tableBody = document.getElementById('members-table-body');
+            tableBody.innerHTML = '';
+            
+            mockMembers.forEach(member => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-zinc-100 hover:bg-zinc-50';
+                row.innerHTML = `
+                    <td class="py-3 px-4">${member.id}</td>
+                    <td class="py-3 px-4">${member.lastName}${member.firstName}</td>
+                    <td class="py-3 px-4">${member.email}</td>
+                    <td class="py-3 px-4">${member.joinDate}</td>
+                    <td class="py-3 px-4">${member.reservations}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ${member.status}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // 총 회원 수 업데이트
+            document.getElementById('total-members').textContent = mockMembers.length;
+            
+            // 예약 통계 업데이트
+            const totalReservations = mockReservations.reduce((sum, item) => sum + item.count, 0);
+            document.getElementById('total-reservations').textContent = totalReservations;
+            document.getElementById('active-reservations').textContent = mockReservations[mockReservations.length - 1].count;
+            
+            // 차트 렌더링
+            renderReservationsChart();
+        }
+        
+        function renderReservationsChart() {
+            const options = {
+                series: [{
+                    name: '예약 수',
+                    data: mockReservations.map(item => item.count)
+                }],
+                chart: {
+                    height: '100%',
+                    type: 'area',
+                    toolbar: {
+                        show: false
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                },
+                colors: ['#e11d48'],
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.1,
+                        stops: [0, 90, 100]
+                    }
+                },
+                xaxis: {
+                    categories: mockReservations.map(item => item.month),
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f1f1',
+                    strokeDashArray: 5
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + "건";
+                        }
+                    }
+                }
+            };
+            
+            const chart = new ApexCharts(document.querySelector("#reservations-chart"), options);
+            chart.render();
+        }
+        
+        function exportMembersToExcel() {
+            // 엑셀 다운로드 모의 구현
+            const data = mockMembers.map(member => ({
+                ID: member.id,
+                이름: `${member.lastName}${member.firstName}`,
+                이메일: member.email,
+                가입일: member.joinDate,
+                예약수: member.reservations,
+                상태: member.status
+            }));
+            
+            // CSV 형식으로 변환
+            const headers = Object.keys(data[0]).join(',');
+            const rows = data.map(item => Object.values(item).join(','));
+            const csv = [headers, ...rows].join('\n');
+            
+            // Blob 생성 및 다운로드
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `kai-members-${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('회원 명부가 다운로드되었습니다.', 'success');
+        }
+        
+        function showNotification(message, type = 'info') {
+            // 간단한 알림 표시 (토스트 메시지)
+            const toast = document.createElement('div');
+            toast.className = `fixed top-6 right-6 px-6 py-3 rounded-lg shadow-lg z-50 transition-all-300 transform translate-x-full ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // 애니메이션
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+                toast.classList.add('translate-x-0');
+            }, 10);
+            
+            // 3초 후 제거
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0');
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+        
+        // 페이지 로드 시 현재 날짜 설정 (예약 폼)
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('reservation-date').min = today;
+        
+        // 모바일에서 메뉴 클릭 시 메뉴 닫기
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // 스무스 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') return;
+                
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
