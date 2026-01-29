@@ -125,6 +125,34 @@
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
+        
+        /* Admin specific styles */
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 40;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .admin-btn.hidden {
+            display: none;
+        }
     </style>
     
     <script>
@@ -153,6 +181,12 @@
     </script>
 </head>
 <body class="min-h-screen bg-white text-zinc-900">
+    <!-- Admin Login Button (always visible) -->
+    <div id="admin-login-btn" class="admin-btn">
+        <iconify-icon icon="mdi:shield-account" width="20" height="20"></iconify-icon>
+        <span>관리자 로그인</span>
+    </div>
+
     <!-- Language selector floating button -->
     <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
         <div id="language-dropdown" class="hidden bg-white rounded-lg shadow-xl border border-zinc-200 p-2 mb-2">
@@ -233,7 +267,7 @@
                 <a href="#courses" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">강좌</a>
                 <a href="#magazine" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">매거진</a>
                 <a href="#reservation" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">예약</a>
-                <a href="#locations" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">지점</a>
+                    <a href="#locations" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">지점</a>
                 <a href="#about" class="text-sm font-medium text-zinc-700 hover:text-primary py-2">소개</a>
                 <div class="pt-2 border-t border-zinc-100">
                     <button id="mobile-login-btn" class="text-sm font-medium text-zinc-700 hover:text-primary py-2 w-full text-left">로그인</button>
@@ -755,6 +789,43 @@
 
     <!-- Modals -->
     
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-bold text-2xl">관리자 로그인</h3>
+                <button id="close-admin-login-modal" class="text-zinc-400 hover:text-zinc-700">
+                    <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+                </button>
+            </div>
+            
+            <form id="admin-login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">관리자 이메일</label>
+                    <input type="email" id="admin-email" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-zinc-700 mb-2">비밀번호</label>
+                    <input type="password" id="admin-password" class="w-full px-4 py-3 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" id="admin-remember-me" class="h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="admin-remember-me" class="ml-2 text-sm text-zinc-700">로그인 상태 유지</label>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all-300 mt-4">
+                    관리자 로그인
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-sm text-zinc-600">
+                <p>일반 사용자는 <button id="switch-to-normal-login" class="text-primary font-medium hover:text-primary-dark">일반 로그인</button>을 이용해주세요.</p>
+            </div>
+        </div>
+    </div>
+    
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-8">
@@ -869,110 +940,320 @@
     <div id="admin-panel" class="hidden fixed inset-0 bg-white z-50 overflow-y-auto">
         <div class="min-h-screen">
             <!-- Admin Header -->
-            <div class="bg-zinc-900 text-white p-6">
+            <div class="bg-gradient-to-r from-purple-700 to-blue-700 text-white p-6">
                 <div class="max-w-7xl mx-auto flex justify-between items-center">
                     <div class="flex items-center">
                         <iconify-icon icon="mdi:shield-account" width="32" height="32" class="mr-3"></iconify-icon>
-                        <h2 class="text-2xl font-bold">Kai-Culture 관리자 패널</h2>
+                        <div>
+                            <h2 class="text-2xl font-bold">Kai-Culture 관리자 패널</h2>
+                            <p class="text-sm text-purple-200">회원 데이터 관리 및 시스템 모니터링</p>
+                        </div>
                     </div>
-                    <button id="close-admin-panel" class="text-white hover:text-zinc-300">
-                        <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
-                    </button>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right hidden md:block">
+                            <p class="font-medium" id="admin-name">관리자</p>
+                            <p class="text-sm text-purple-200" id="admin-email-display">one@naver.com</p>
+                        </div>
+                        <button id="close-admin-panel" class="text-white hover:text-purple-200 bg-purple-800/30 p-2 rounded-lg">
+                            <iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Navigation -->
+            <div class="bg-white border-b border-zinc-200">
+                <div class="max-w-7xl mx-auto px-6">
+                    <div class="flex space-x-8 overflow-x-auto">
+                        <button class="admin-nav-btn active py-4 px-2 font-medium border-b-2 border-purple-600 text-purple-600" data-tab="members">
+                            <iconify-icon icon="mdi:account-group" width="20" height="20" class="mr-2"></iconify-icon>
+                            회원 관리
+                        </button>
+                        <button class="admin-nav-btn py-4 px-2 font-medium text-zinc-600 hover:text-purple-600 transition-all-300" data-tab="reservations">
+                            <iconify-icon icon="mdi:calendar-check" width="20" height="20" class="mr-2"></iconify-icon>
+                            예약 관리
+                        </button>
+                        <button class="admin-nav-btn py-4 px-2 font-medium text-zinc-600 hover:text-purple-600 transition-all-300" data-tab="courses">
+                            <iconify-icon icon="mdi:book-education" width="20" height="20" class="mr-2"></iconify-icon>
+                            강좌 관리
+                        </button>
+                        <button class="admin-nav-btn py-4 px-2 font-medium text-zinc-600 hover:text-purple-600 transition-all-300" data-tab="analytics">
+                            <iconify-icon icon="mdi:chart-bar" width="20" height="20" class="mr-2"></iconify-icon>
+                            통계 분석
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <!-- Admin Content -->
             <div class="max-w-7xl mx-auto p-6">
-                <div class="mb-8">
-                    <h3 class="text-xl font-bold mb-4">회원 관리</h3>
-                    <div class="bg-white rounded-xl border border-zinc-200 overflow-hidden">
-                        <div class="p-4 border-b border-zinc-200 flex justify-between items-center">
-                            <p class="font-medium">총 회원 수: <span id="total-members">0</span>명</p>
-                            <button id="export-members-btn" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark flex items-center">
-                                <iconify-icon icon="mdi:download" width="16" height="16" class="mr-2"></iconify-icon>
-                                회원 명부 엑셀 다운로드
-                            </button>
+                <!-- Members Tab -->
+                <div id="members-tab" class="admin-tab active">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold">회원 관리</h3>
+                                <p class="text-zinc-600">가입된 회원 정보를 확인하고 관리할 수 있습니다.</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button id="refresh-members-btn" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-800 px-4 py-2 rounded-lg font-medium transition-all-300 flex items-center">
+                                    <iconify-icon icon="mdi:refresh" width="16" height="16" class="mr-2"></iconify-icon>
+                                    새로고침
+                                </button>
+                                <button id="export-members-btn" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-all-300 flex items-center">
+                                    <iconify-icon icon="mdi:download" width="16" height="16" class="mr-2"></iconify-icon>
+                                    회원 명부 다운로드
+                                </button>
+                            </div>
                         </div>
-                        <div class="p-4">
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm">
-                                    <thead>
-                                        <tr class="border-b border-zinc-200">
-                                            <th class="text-left py-3 px-4">ID</th>
-                                            <th class="text-left py-3 px-4">이름</th>
-                                            <th class="text-left py-3 px-4">이메일</th>
-                                            <th class="text-left py-3 px-4">가입일</th>
-                                            <th class="text-left py-3 px-4">예약 수</th>
-                                            <th class="text-left py-3 px-4">상태</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="members-table-body">
-                                        <!-- Members will be populated by JavaScript -->
-                                    </tbody>
-                                </table>
+                        
+                        <div class="bg-white rounded-xl border border-zinc-200 overflow-hidden mb-6">
+                            <div class="p-4 border-b border-zinc-200">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div class="bg-purple-50 rounded-lg p-4">
+                                        <p class="text-sm text-zinc-600">총 회원 수</p>
+                                        <p class="text-2xl font-bold text-purple-700" id="total-members">0</p>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-4">
+                                        <p class="text-sm text-zinc-600">오늘 가입</p>
+                                        <p class="text-2xl font-bold text-blue-700" id="today-members">0</p>
+                                    </div>
+                                    <div class="bg-green-50 rounded-lg p-4">
+                                        <p class="text-sm text-zinc-600">활성 회원</p>
+                                        <p class="text-2xl font-bold text-green-700" id="active-members">0</p>
+                                    </div>
+                                    <div class="bg-amber-50 rounded-lg p-4">
+                                        <p class="text-sm text-zinc-600">예약한 회원</p>
+                                        <p class="text-2xl font-bold text-amber-700" id="reserved-members">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="relative">
+                                            <iconify-icon icon="mdi:magnify" width="20" height="20" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400"></iconify-icon>
+                                            <input type="text" id="member-search" placeholder="회원 검색..." class="pl-10 pr-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64">
+                                        </div>
+                                        <select id="member-filter" class="px-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                            <option value="all">전체 회원</option>
+                                            <option value="active">활성 회원</option>
+                                            <option value="inactive">비활성 회원</option>
+                                            <option value="reserved">예약한 회원</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-sm text-zinc-500">
+                                        <span id="members-count">0</span>명의 회원
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto rounded-lg border border-zinc-200">
+                                    <table class="w-full">
+                                        <thead class="bg-zinc-50">
+                                            <tr>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">ID</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">이름</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">이메일</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">전화번호</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">가입일</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">예약 수</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">상태</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">관리</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="members-table-body" class="divide-y divide-zinc-200">
+                                            <!-- Members will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="flex justify-between items-center mt-4">
+                                    <div class="text-sm text-zinc-500">
+                                        페이지 <span id="current-page">1</span> / <span id="total-pages">1</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button id="prev-page" class="px-3 py-1 border border-zinc-300 rounded text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                            이전
+                                        </button>
+                                        <button id="next-page" class="px-3 py-1 border border-zinc-300 rounded text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                            다음
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                            <h4 class="font-bold text-lg mb-4">회원 가입 추이</h4>
+                            <div class="h-64" id="members-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reservations Tab -->
+                <div id="reservations-tab" class="admin-tab hidden">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold">예약 관리</h3>
+                                <p class="text-zinc-600">모든 예약 내역을 확인하고 관리할 수 있습니다.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                            <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:calendar-check" class="text-blue-600" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold" id="total-reservations">0</p>
+                                        <p class="text-sm text-zinc-600">총 예약 수</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:calendar-today" class="text-green-600" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold" id="active-reservations">0</p>
+                                        <p class="text-sm text-zinc-600">활성 예약</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mr-4">
+                                        <iconify-icon icon="mdi:cash" class="text-amber-600" width="24" height="24"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <p class="text-2xl font-bold" id="total-revenue">₩0</p>
+                                        <p class="text-sm text-zinc-600">총 수익</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+                            <div class="p-4 border-b border-zinc-200 flex justify-between items-center">
+                                <h4 class="font-bold">최근 예약</h4>
+                                <select id="reservation-filter" class="px-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option value="all">전체 예약</option>
+                                    <option value="today">오늘 예약</option>
+                                    <option value="week">이번 주 예약</option>
+                                    <option value="month">이번 달 예약</option>
+                                </select>
+                            </div>
+                            <div class="p-4">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-zinc-50">
+                                            <tr>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">예약 ID</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">회원</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">강좌</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">날짜/시간</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">금액</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">상태</th>
+                                                <th class="text-left py-3 px-4 font-medium text-zinc-700">관리</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reservations-table-body" class="divide-y divide-zinc-200">
+                                            <!-- Reservations will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Reservations Stats -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-4">예약 통계</h3>
-                        <div class="bg-white rounded-xl border border-zinc-200 p-6">
-                            <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div class="bg-zinc-50 rounded-lg p-4">
-                                    <p class="text-2xl font-bold text-primary" id="total-reservations">0</p>
-                                    <p class="text-sm text-zinc-600">총 예약 수</p>
-                                </div>
-                                <div class="bg-zinc-50 rounded-lg p-4">
-                                    <p class="text-2xl font-bold text-accent" id="active-reservations">0</p>
-                                    <p class="text-sm text-zinc-600">활성 예약</p>
-                                </div>
+                <!-- Courses Tab -->
+                <div id="courses-tab" class="admin-tab hidden">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold">강좌 관리</h3>
+                                <p class="text-zinc-600">강좌 정보를 확인하고 관리할 수 있습니다.</p>
                             </div>
-                            <div class="h-64" id="reservations-chart"></div>
+                            <button id="add-course-btn" class="bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-all-300 flex items-center">
+                                <iconify-icon icon="mdi:plus" width="16" height="16" class="mr-2"></iconify-icon>
+                                새 강좌 추가
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="courses-list">
+                            <!-- Courses will be populated by JavaScript -->
                         </div>
                     </div>
-                    
-                    <!-- Popular Courses -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-4">인기 강좌</h3>
+                </div>
+                
+                <!-- Analytics Tab -->
+                <div id="analytics-tab" class="admin-tab hidden">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold">통계 분석</h3>
+                                <p class="text-zinc-600">서비스 이용 통계와 분석 데이터를 확인할 수 있습니다.</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <select id="analytics-period" class="px-4 py-2 border border-zinc-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <option value="week">지난 1주일</option>
+                                    <option value="month" selected>지난 1개월</option>
+                                    <option value="quarter">지난 3개월</option>
+                                    <option value="year">지난 1년</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                                <h4 class="font-bold text-lg mb-4">회원 가입 추이</h4>
+                                <div class="h-64" id="analytics-members-chart"></div>
+                            </div>
+                            <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                                <h4 class="font-bold text-lg mb-4">예약 추이</h4>
+                                <div class="h-64" id="analytics-reservations-chart"></div>
+                            </div>
+                        </div>
+                        
                         <div class="bg-white rounded-xl border border-zinc-200 p-6">
+                            <h4 class="font-bold text-lg mb-4">인기 강좌</h4>
                             <div class="space-y-4">
                                 <div>
                                     <div class="flex justify-between mb-1">
                                         <span class="text-sm font-medium">K-Pop 댄스 마스터클래스</span>
-                                        <span class="text-sm font-bold text-primary">42명</span>
+                                        <span class="text-sm font-bold text-purple-700">42명</span>
                                     </div>
                                     <div class="w-full bg-zinc-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 70%"></div>
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 70%"></div>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="flex justify-between mb-1">
                                         <span class="text-sm font-medium">K-Beauty 스킨케어 워크숍</span>
-                                        <span class="text-sm font-bold text-primary">38명</span>
+                                        <span class="text-sm font-bold text-purple-700">38명</span>
                                     </div>
                                     <div class="w-full bg-zinc-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 63%"></div>
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 63%"></div>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="flex justify-between mb-1">
                                         <span class="text-sm font-medium">한국 전통 도예 클래스</span>
-                                        <span class="text-sm font-bold text-primary">29명</span>
+                                        <span class="text-sm font-bold text-purple-700">29명</span>
                                     </div>
                                     <div class="w-full bg-zinc-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 48%"></div>
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 48%"></div>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="flex justify-between mb-1">
                                         <span class="text-sm font-medium">K-Food 요리 클래스</span>
-                                        <span class="text-sm font-bold text-primary">25명</span>
+                                        <span class="text-sm font-bold text-purple-700">25명</span>
                                     </div>
                                     <div class="w-full bg-zinc-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 42%"></div>
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 42%"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1230,43 +1511,113 @@
         let currentUser = null;
         let isAdmin = false;
         
-        // 모의 데이터
-        const mockMembers = [
-            { id: 1, firstName: "지민", lastName: "김", email: "jimin.kim@example.com", joinDate: "2023-01-15", reservations: 5, status: "활성" },
-            { id: 2, firstName: "수현", lastName: "이", email: "soohyun.lee@example.com", joinDate: "2023-02-20", reservations: 3, status: "활성" },
-            { id: 3, firstName: "민준", lastName: "박", email: "minjun.park@example.com", joinDate: "2023-03-10", reservations: 7, status: "활성" },
-            { id: 4, firstName: "서연", lastName: "최", email: "seoyeon.choi@example.com", joinDate: "2023-04-05", reservations: 2, status: "활성" },
-            { id: 5, firstName: "도윤", lastName: "정", email: "doyun.jung@example.com", joinDate: "2023-05-12", reservations: 4, status: "활성" },
-            { id: 6, firstName: "하준", lastName: "강", email: "hajun.kang@example.com", joinDate: "2023-06-18", reservations: 1, status: "활성" },
-            { id: 7, firstName: "지우", lastName: "조", email: "jiwoo.cho@example.com", joinDate: "2023-07-22", reservations: 6, status: "활성" },
-            { id: 8, firstName: "서준", lastName: "윤", email: "seojun.yoon@example.com", joinDate: "2023-08-30", reservations: 3, status: "활성" }
-        ];
+        // 관리자 데이터 저장소
+        let adminData = {
+            members: [],
+            reservations: [],
+            courses: [],
+            analytics: {
+                members: [],
+                reservations: []
+            }
+        };
         
-        const mockReservations = [
-            { month: "1월", count: 12 },
-            { month: "2월", count: 18 },
-            { month: "3월", count: 22 },
-            { month: "4월", count: 25 },
-            { month: "5월", count: 30 },
-            { month: "6월", count: 28 },
-            { month: "7월", count: 35 },
-            { month: "8월", count: 42 },
-            { month: "9월", count: 38 },
-            { month: "10월", count: 45 },
-            { month: "11월", count: 40 },
-            { month: "12월", count: 50 }
-        ];
-
+        // 모의 데이터 생성 함수
+        function generateMockData() {
+            // 회원 데이터 생성
+            const mockMembers = [
+                { id: 1, firstName: "지민", lastName: "김", email: "jimin.kim@example.com", phone: "010-1234-5678", joinDate: "2023-01-15", reservations: 5, status: "활성" },
+                { id: 2, firstName: "수현", lastName: "이", email: "soohyun.lee@example.com", phone: "010-2345-6789", joinDate: "2023-02-20", reservations: 3, status: "활성" },
+                { id: 3, firstName: "민준", lastName: "박", email: "minjun.park@example.com", phone: "010-3456-7890", joinDate: "2023-03-10", reservations: 7, status: "활성" },
+                { id: 4, firstName: "서연", lastName: "최", email: "seoyeon.choi@example.com", phone: "010-4567-8901", joinDate: "2023-04-05", reservations: 2, status: "활성" },
+                { id: 5, firstName: "도윤", lastName: "정", email: "doyun.jung@example.com", phone: "010-5678-9012", joinDate: "2023-05-12", reservations: 4, status: "활성" },
+                { id: 6, firstName: "하준", lastName: "강", email: "hajun.kang@example.com", phone: "010-6789-0123", joinDate: "2023-06-18", reservations: 1, status: "활성" },
+                { id: 7, firstName: "지우", lastName: "조", email: "jiwoo.cho@example.com", phone: "010-7890-1234", joinDate: "2023-07-22", reservations: 6, status: "활성" },
+                { id: 8, firstName: "서준", lastName: "윤", email: "seojun.yoon@example.com", phone: "010-8901-2345", joinDate: "2023-08-30", reservations: 3, status: "활성" },
+                { id: 9, firstName: "지원", lastName: "임", email: "jiwon.lim@example.com", phone: "010-9012-3456", joinDate: "2023-09-15", reservations: 0, status: "활성" },
+                { id: 10, firstName: "예준", lastName: "한", email: "yejun.han@example.com", phone: "010-0123-4567", joinDate: "2023-10-10", reservations: 2, status: "활성" }
+            ];
+            
+            // 예약 데이터 생성
+            const coursePrices = {
+                "K-Pop 댄스 마스터클래스": 120000,
+                "K-Beauty 스킨케어 워크숍": 85000,
+                "한국 전통 도예 클래스": 95000,
+                "한국 전통 음악 체험": 75000,
+                "K-Food 요리 클래스": 90000
+            };
+            
+            const mockReservations = [];
+            const reservationStatuses = ["확정", "대기", "취소"];
+            
+            mockMembers.forEach((member, index) => {
+                for (let i = 0; i < member.reservations; i++) {
+                    const courseNames = Object.keys(coursePrices);
+                    const courseName = courseNames[Math.floor(Math.random() * courseNames.length)];
+                    const reservationDate = new Date();
+                    reservationDate.setDate(reservationDate.getDate() - Math.floor(Math.random() * 30));
+                    
+                    mockReservations.push({
+                        id: mockReservations.length + 1,
+                        memberId: member.id,
+                        memberName: `${member.lastName}${member.firstName}`,
+                        memberEmail: member.email,
+                        course: courseName,
+                        date: reservationDate.toISOString().split('T')[0],
+                        time: ["10:00", "14:00", "16:00", "19:00"][Math.floor(Math.random() * 4)],
+                        amount: coursePrices[courseName],
+                        status: reservationStatuses[Math.floor(Math.random() * reservationStatuses.length)],
+                        createdAt: reservationDate.toISOString()
+                    });
+                }
+            });
+            
+            // 강좌 데이터
+            const mockCourses = [
+                { id: 1, name: "K-Pop 댄스 마스터클래스", price: 120000, duration: "주 2회, 4주", students: 42, status: "진행중" },
+                { id: 2, name: "K-Beauty 스킨케어 워크숍", price: 85000, duration: "주 1회, 3주", students: 38, status: "진행중" },
+                { id: 3, name: "한국 전통 도예 클래스", price: 95000, duration: "주 1회, 6주", students: 29, status: "진행중" },
+                { id: 4, name: "한국 전통 음악 체험", price: 75000, duration: "주 1회, 2주", students: 18, status: "진행중" },
+                { id: 5, name: "K-Food 요리 클래스", price: 90000, duration: "주 1회, 4주", students: 25, status: "진행중" },
+                { id: 6, name: "한국어 기초 회화", price: 80000, duration: "주 2회, 8주", students: 35, status: "준비중" }
+            ];
+            
+            // 분석 데이터
+            const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+            const mockAnalyticsMembers = months.map((month, index) => ({
+                month,
+                count: Math.floor(Math.random() * 20) + 5
+            }));
+            
+            const mockAnalyticsReservations = months.map((month, index) => ({
+                month,
+                count: Math.floor(Math.random() * 30) + 10
+            }));
+            
+            return {
+                members: mockMembers,
+                reservations: mockReservations,
+                courses: mockCourses,
+                analytics: {
+                    members: mockAnalyticsMembers,
+                    reservations: mockAnalyticsReservations
+                }
+            };
+        }
+        
         // DOM이 로드되면 실행
         document.addEventListener('DOMContentLoaded', function() {
             initApp();
         });
         
         function initApp() {
+            // 모의 데이터 생성
+            adminData = generateMockData();
+            
             // 이벤트 리스너 설정
             setupEventListeners();
             
-            // 모의 사용자 데이터 로드 (로컬 스토리지에서)
+            // 기존 사용자 데이터 로드 (로컬 스토리지에서)
             loadUserData();
             
             // 언어 설정
@@ -1274,6 +1625,9 @@
             
             // 관리자 패널 초기화
             initAdminPanel();
+            
+            // 관리자 버튼 이벤트 리스너 추가
+            document.getElementById('admin-login-btn').addEventListener('click', showAdminLoginModal);
         }
         
         function setupEventListeners() {
@@ -1290,6 +1644,7 @@
             document.getElementById('close-signup-modal').addEventListener('click', hideSignupModal);
             document.getElementById('close-reservation-success-modal').addEventListener('click', hideReservationSuccessModal);
             document.getElementById('close-admin-panel').addEventListener('click', hideAdminPanel);
+            document.getElementById('close-admin-login-modal').addEventListener('click', hideAdminLoginModal);
             
             // 모달 전환
             document.getElementById('switch-to-signup').addEventListener('click', function() {
@@ -1302,10 +1657,16 @@
                 showLoginModal();
             });
             
+            document.getElementById('switch-to-normal-login').addEventListener('click', function() {
+                hideAdminLoginModal();
+                showLoginModal();
+            });
+            
             // 폼 제출
             document.getElementById('login-form').addEventListener('submit', handleLogin);
             document.getElementById('signup-form').addEventListener('submit', handleSignup);
             document.getElementById('reservation-form').addEventListener('submit', handleReservation);
+            document.getElementById('admin-login-form').addEventListener('submit', handleAdminLogin);
             
             // 로그아웃
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
@@ -1318,8 +1679,36 @@
                 });
             });
             
+            // 관리자 패널 내 이벤트
+            document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    switchAdminTab(tab);
+                });
+            });
+            
             // 회원 명부 다운로드
             document.getElementById('export-members-btn').addEventListener('click', exportMembersToExcel);
+            
+            // 회원 검색
+            document.getElementById('member-search').addEventListener('input', filterMembers);
+            document.getElementById('member-filter').addEventListener('change', filterMembers);
+            
+            // 페이지네이션
+            document.getElementById('prev-page').addEventListener('click', goToPrevPage);
+            document.getElementById('next-page').addEventListener('click', goToNextPage);
+            
+            // 예약 필터
+            document.getElementById('reservation-filter').addEventListener('change', filterReservations);
+            
+            // 분석 기간 변경
+            document.getElementById('analytics-period').addEventListener('change', updateAnalytics);
+            
+            // 새로고침 버튼
+            document.getElementById('refresh-members-btn').addEventListener('click', refreshMembers);
+            
+            // 새 강좌 추가
+            document.getElementById('add-course-btn').addEventListener('click', addNewCourse);
             
             // 모바일 메뉴
             document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
@@ -1426,51 +1815,20 @@
             
             // 관리자 패널 업데이트
             document.querySelector('#admin-panel h2').textContent = data['admin-panel'];
-            document.querySelector('#admin-panel h3.text-xl').textContent = data['member-management'];
-            document.querySelector('#admin-panel p.font-medium').innerHTML = `${data['total-members']}: <span id="total-members">0</span>${lang === 'en' ? '' : '명'}`;
-            document.querySelector('#export-members-btn').innerHTML = `<iconify-icon icon="mdi:download" width="16" height="16" class="mr-2"></iconify-icon>${data['export-members']}`;
-            document.querySelectorAll('#admin-panel h3.text-xl')[1].textContent = data['reservation-stats'];
+            document.querySelectorAll('.admin-nav-btn')[0].innerHTML = `<iconify-icon icon="mdi:account-group" width="20" height="20" class="mr-2"></iconify-icon>${data['member-management']}`;
+            document.querySelector('#members-tab h3').textContent = data['member-management'];
             document.querySelectorAll('.bg-zinc-50.rounded-lg p.text-sm')[0].textContent = data['total-reservations'];
             document.querySelectorAll('.bg-zinc-50.rounded-lg p.text-sm')[1].textContent = data['active-reservations'];
-            document.querySelectorAll('#admin-panel h3.text-xl')[2].textContent = data['popular-courses-stats'];
-            
-            // 테이블 헤더 업데이트
-            const tableHeaders = document.querySelectorAll('#admin-panel th');
-            if (tableHeaders.length >= 6) {
-                tableHeaders[0].textContent = "ID";
-                tableHeaders[1].textContent = lang === 'en' ? "Name" : lang === 'zh' ? "姓名" : "이름";
-                tableHeaders[2].textContent = lang === 'en' ? "Email" : lang === 'zh' ? "电子邮件" : "이메일";
-                tableHeaders[3].textContent = lang === 'en' ? "Join Date" : lang === 'zh' ? "加入日期" : "가입일";
-                tableHeaders[4].textContent = lang === 'en' ? "Reservations" : lang === 'zh' ? "预约数" : "예약 수";
-                tableHeaders[5].textContent = lang === 'en' ? "Status" : lang === 'zh' ? "状态" : "상태";
-            }
-            
-            // 로그인 모달 업데이트
-            document.querySelector('#login-modal h3').textContent = data.login;
-            document.querySelector('#login-form label[for="login-email"]').textContent = data.email;
-            document.querySelector('#login-form label[for="login-password"]').textContent = lang === 'en' ? "Password" : lang === 'zh' ? "密码" : "비밀번호";
-            document.querySelector('#login-form label[for="remember-me"]').textContent = lang === 'en' ? "Remember me" : lang === 'zh' ? "记住我" : "로그인 상태 유지";
-            document.querySelector('#login-form a.text-sm').textContent = lang === 'en' ? "Forgot password?" : lang === 'zh' ? "忘记密码？" : "비밀번호 찾기";
-            document.querySelector('#login-form button[type="submit"]').textContent = data.login;
-            document.querySelector('#login-modal .text-center p').innerHTML = `${lang === 'en' ? "Don't have an account?" : lang === 'zh' ? "还没有账户？" : "계정이 없으신가요?"} <button id="switch-to-signup" class="text-primary font-medium hover:text-primary-dark">${data.signup}</button>`;
-            
-            // 회원가입 모달 업데이트
-            document.querySelector('#signup-modal h3').textContent = data.signup;
-            document.querySelector('#signup-form label[for="signup-first-name"]').textContent = lang === 'en' ? "First Name" : lang === 'zh' ? "名字" : "이름";
-            document.querySelector('#signup-form label[for="signup-last-name"]').textContent = lang === 'en' ? "Last Name" : lang === 'zh' ? "姓氏" : "성";
-            document.querySelector('#signup-form label[for="signup-email"]').textContent = data.email;
-            document.querySelector('#signup-form label[for="signup-password"]').textContent = lang === 'en' ? "Password" : lang === 'zh' ? "密码" : "비밀번호";
-            document.querySelector('#signup-form p.text-xs').textContent = lang === 'en' ? "Minimum 8 characters, including letters and numbers" : lang === 'zh' ? "至少8个字符，包含字母和数字" : "최소 8자 이상, 영문과 숫자 포함";
-            document.querySelector('#signup-form label[for="signup-password-confirm"]').textContent = lang === 'en' ? "Confirm Password" : lang === 'zh' ? "确认密码" : "비밀번호 확인";
-            document.querySelector('#signup-form label[for="signup-agree"]').innerHTML = `${lang === 'en' ? "I agree to the" : lang === 'zh' ? "我同意" : ""} <a href="#" class="text-primary hover:underline">${lang === 'en' ? "Terms of Service" : lang === 'zh' ? "服务条款" : "이용약관"}</a> ${lang === 'en' ? "and" : lang === 'zh' ? "和" : "및"} <a href="#" class="text-primary hover:underline">${lang === 'en' ? "Privacy Policy" : lang === 'zh' ? "隐私政策" : "개인정보처리방침"}</a>${lang === 'ko' ? "에 동의합니다" : lang === 'zh' ? "" : ""}`;
-            document.querySelector('#signup-form button[type="submit"]').textContent = data.signup;
-            document.querySelector('#signup-modal .text-center p').innerHTML = `${lang === 'en' ? "Already have an account?" : lang === 'zh' ? "已有账户？" : "이미 계정이 있으신가요?"} <button id="switch-to-login" class="text-primary font-medium hover:text-primary-dark">${data.login}</button>`;
-            
-            // 사용자 메뉴 업데이트
-            document.querySelectorAll('#user-dropdown a')[0].textContent = data.dashboard;
-            document.querySelectorAll('#user-dropdown a')[1].textContent = data['my-reservations'];
-            document.querySelectorAll('#user-dropdown a')[2].textContent = data.profile;
-            document.getElementById('logout-btn').textContent = data.logout;
+            document.querySelector('#analytics-tab h3').textContent = data['popular-courses-stats'];
+        }
+        
+        // 모달 관련 함수
+        function showAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        }
+        
+        function hideAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
         }
         
         function showLoginModal() {
@@ -1500,11 +1858,13 @@
         
         function showAdminPanel() {
             document.getElementById('admin-panel').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
             renderAdminPanel();
         }
         
         function hideAdminPanel() {
             document.getElementById('admin-panel').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
         
         function toggleMobileMenu() {
@@ -1517,7 +1877,18 @@
         
         function loadUserData() {
             const savedUser = localStorage.getItem('kaiUser');
-            if (savedUser) {
+            const savedAdmin = localStorage.getItem('kaiAdmin');
+            
+            if (savedAdmin) {
+                const admin = JSON.parse(savedAdmin);
+                if (admin.isAdmin && admin.email === 'one@naver.com') {
+                    currentUser = admin;
+                    isAdmin = true;
+                    updateUIForLoggedInUser();
+                    // 관리자 버튼 숨기기
+                    document.getElementById('admin-login-btn').classList.add('hidden');
+                }
+            } else if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 updateUIForLoggedInUser();
             }
@@ -1525,6 +1896,44 @@
         
         function saveUserData(user) {
             localStorage.setItem('kaiUser', JSON.stringify(user));
+        }
+        
+        function saveAdminData(admin) {
+            localStorage.setItem('kaiAdmin', JSON.stringify(admin));
+        }
+        
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            
+            // 관리자 계정 인증 (one@naver.com / pass1234)
+            if (email === 'one@naver.com' && password === 'pass1234') {
+                currentUser = {
+                    firstName: '관리자',
+                    lastName: '',
+                    email: email,
+                    isAdmin: true
+                };
+                
+                isAdmin = true;
+                saveAdminData(currentUser);
+                updateUIForLoggedInUser();
+                hideAdminLoginModal();
+                
+                // 관리자 버튼 숨기기
+                document.getElementById('admin-login-btn').classList.add('hidden');
+                
+                // 관리자 패널 표시
+                setTimeout(() => {
+                    showAdminPanel();
+                }, 500);
+                
+                showNotification('관리자 로그인되었습니다.', 'success');
+            } else {
+                showNotification('관리자 이메일 또는 비밀번호가 올바르지 않습니다.', 'error');
+            }
         }
         
         function handleLogin(event) {
@@ -1535,35 +1944,16 @@
             
             // 간단한 모의 인증
             if (email && password) {
-                // 관리자 계정 체크 (간단한 모의)
-                if (email === 'admin@kai.com' && password === 'admin123') {
-                    isAdmin = true;
-                    currentUser = {
-                        firstName: '관리자',
-                        lastName: '',
-                        email: email,
-                        isAdmin: true
-                    };
-                } else {
-                    isAdmin = false;
-                    currentUser = {
-                        firstName: '사용자',
-                        lastName: '',
-                        email: email,
-                        isAdmin: false
-                    };
-                }
+                currentUser = {
+                    firstName: '사용자',
+                    lastName: '',
+                    email: email,
+                    isAdmin: false
+                };
                 
                 saveUserData(currentUser);
                 updateUIForLoggedInUser();
                 hideLoginModal();
-                
-                // 관리자인 경우 관리자 패널 표시
-                if (isAdmin) {
-                    setTimeout(() => {
-                        showAdminPanel();
-                    }, 500);
-                }
                 
                 showNotification('로그인되었습니다.', 'success');
             } else {
@@ -1586,6 +1976,20 @@
             }
             
             if (firstName && lastName && email && password) {
+                // 새 회원 데이터 추가
+                const newMember = {
+                    id: adminData.members.length + 1,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: '010-0000-0000', // 기본값
+                    joinDate: new Date().toISOString().split('T')[0],
+                    reservations: 0,
+                    status: "활성"
+                };
+                
+                adminData.members.push(newMember);
+                
                 currentUser = {
                     firstName: firstName,
                     lastName: lastName,
@@ -1607,8 +2011,12 @@
             currentUser = null;
             isAdmin = false;
             localStorage.removeItem('kaiUser');
+            localStorage.removeItem('kaiAdmin');
             updateUIForLoggedOutUser();
             hideAdminPanel();
+            
+            // 관리자 버튼 다시 표시
+            document.getElementById('admin-login-btn').classList.remove('hidden');
             
             showNotification('로그아웃되었습니다.', 'success');
         }
@@ -1627,10 +2035,45 @@
             const course = document.getElementById('reservation-course').value;
             const date = document.getElementById('reservation-date').value;
             const time = document.getElementById('reservation-time').value;
+            const notes = document.getElementById('reservation-notes').value;
             
             if (!name || !email || !course || !date || !time) {
                 showNotification('필수 정보를 모두 입력해주세요.', 'error');
                 return;
+            }
+            
+            // 가격 정보
+            const coursePrices = {
+                "K-Pop 댄스 마스터클래스": 120000,
+                "K-Beauty 스킨케어 워크숍": 85000,
+                "한국 전통 도예 클래스": 95000,
+                "한국 전통 음악 체험": 75000,
+                "K-Food 요리 클래스": 90000
+            };
+            
+            const amount = coursePrices[course] || 0;
+            
+            // 새 예약 데이터 추가
+            const newReservation = {
+                id: adminData.reservations.length + 1,
+                memberId: currentUser.email === 'one@naver.com' ? 0 : adminData.members.find(m => m.email === currentUser.email)?.id || 0,
+                memberName: name,
+                memberEmail: email,
+                course: course,
+                date: date,
+                time: time,
+                amount: amount,
+                status: "확정",
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+            
+            adminData.reservations.push(newReservation);
+            
+            // 회원의 예약 수 업데이트
+            const member = adminData.members.find(m => m.email === email);
+            if (member) {
+                member.reservations = (member.reservations || 0) + 1;
             }
             
             // 예약 성공 모달 표시
@@ -1640,7 +2083,7 @@
             document.getElementById('reservation-form').reset();
             
             // 관리자 패널이 열려있으면 업데이트
-            if (document.getElementById('admin-panel').classList.contains('hidden') === false) {
+            if (!document.getElementById('admin-panel').classList.contains('hidden')) {
                 renderAdminPanel();
             }
             
@@ -1685,8 +2128,7 @@
         function initAdminPanel() {
             // 관리자 패널 초기화
             if (currentUser && currentUser.isAdmin) {
-                // 관리자 링크 추가 (실제로는 숨겨진 관리자 링크나 별도 경로로 접근)
-                // 여기서는 사용자 메뉴에 관리자 링크 추가
+                // 사용자 메뉴에 관리자 링크 추가
                 const userDropdown = document.getElementById('user-dropdown');
                 const adminLink = document.createElement('a');
                 adminLink.href = '#';
@@ -1705,58 +2147,174 @@
             }
         }
         
+        // 관리자 패널 탭 전환
+        function switchAdminTab(tabName) {
+            // 모든 탭 숨기기
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'border-purple-600', 'text-purple-600');
+                btn.classList.add('text-zinc-600');
+            });
+            
+            // 선택한 탭 표시
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // 선택한 탭 버튼 활성화
+            document.querySelector(`.admin-nav-btn[data-tab="${tabName}"]`).classList.add('active', 'border-purple-600', 'text-purple-600');
+            document.querySelector(`.admin-nav-btn[data-tab="${tabName}"]`).classList.remove('text-zinc-600');
+            
+            // 탭별 데이터 로드
+            switch(tabName) {
+                case 'members':
+                    renderMembersTab();
+                    break;
+                case 'reservations':
+                    renderReservationsTab();
+                    break;
+                case 'courses':
+                    renderCoursesTab();
+                    break;
+                case 'analytics':
+                    renderAnalyticsTab();
+                    break;
+            }
+        }
+        
         function renderAdminPanel() {
-            // 회원 테이블 렌더링
+            // 기본적으로 회원 관리 탭 표시
+            switchAdminTab('members');
+            
+            // 관리자 정보 표시
+            if (currentUser && currentUser.isAdmin) {
+                document.getElementById('admin-name').textContent = currentUser.firstName;
+                document.getElementById('admin-email-display').textContent = currentUser.email;
+            }
+        }
+        
+        // 회원 관리 탭 렌더링
+        let currentPage = 1;
+        const membersPerPage = 5;
+        let filteredMembers = [...adminData.members];
+        
+        function renderMembersTab() {
+            // 통계 업데이트
+            updateMembersStats();
+            
+            // 회원 목록 렌더링
+            renderMembersTable();
+            
+            // 회원 가입 추이 차트 렌더링
+            renderMembersChart();
+        }
+        
+        function updateMembersStats() {
+            const totalMembers = adminData.members.length;
+            const today = new Date().toISOString().split('T')[0];
+            const todayMembers = adminData.members.filter(m => m.joinDate === today).length;
+            const activeMembers = adminData.members.filter(m => m.status === "활성").length;
+            const reservedMembers = adminData.members.filter(m => m.reservations > 0).length;
+            
+            document.getElementById('total-members').textContent = totalMembers;
+            document.getElementById('today-members').textContent = todayMembers;
+            document.getElementById('active-members').textContent = activeMembers;
+            document.getElementById('reserved-members').textContent = reservedMembers;
+        }
+        
+        function renderMembersTable() {
             const tableBody = document.getElementById('members-table-body');
             tableBody.innerHTML = '';
             
-            mockMembers.forEach(member => {
+            // 필터링된 회원 목록
+            const searchTerm = document.getElementById('member-search').value.toLowerCase();
+            const filterValue = document.getElementById('member-filter').value;
+            
+            filteredMembers = adminData.members.filter(member => {
+                // 검색어 필터링
+                const name = `${member.lastName}${member.firstName}`.toLowerCase();
+                const email = member.email.toLowerCase();
+                const phone = member.phone.toLowerCase();
+                
+                const matchesSearch = searchTerm === '' || 
+                    name.includes(searchTerm) || 
+                    email.includes(searchTerm) || 
+                    phone.includes(searchTerm);
+                
+                // 상태 필터링
+                let matchesFilter = true;
+                if (filterValue === 'active') {
+                    matchesFilter = member.status === "활성";
+                } else if (filterValue === 'inactive') {
+                    matchesFilter = member.status !== "활성";
+                } else if (filterValue === 'reserved') {
+                    matchesFilter = member.reservations > 0;
+                }
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            // 페이지네이션
+            const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
+            const startIndex = (currentPage - 1) * membersPerPage;
+            const endIndex = Math.min(startIndex + membersPerPage, filteredMembers.length);
+            const pageMembers = filteredMembers.slice(startIndex, endIndex);
+            
+            // 테이블 행 생성
+            pageMembers.forEach(member => {
                 const row = document.createElement('tr');
-                row.className = 'border-b border-zinc-100 hover:bg-zinc-50';
+                row.className = 'hover:bg-zinc-50';
                 row.innerHTML = `
                     <td class="py-3 px-4">${member.id}</td>
-                    <td class="py-3 px-4">${member.lastName}${member.firstName}</td>
+                    <td class="py-3 px-4 font-medium">${member.lastName}${member.firstName}</td>
                     <td class="py-3 px-4">${member.email}</td>
+                    <td class="py-3 px-4">${member.phone}</td>
                     <td class="py-3 px-4">${member.joinDate}</td>
                     <td class="py-3 px-4">${member.reservations}</td>
                     <td class="py-3 px-4">
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${member.status === "활성" ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
                             ${member.status}
                         </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <button class="text-purple-600 hover:text-purple-800 text-sm font-medium" onclick="editMember(${member.id})">
+                            수정
+                        </button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
             
-            // 총 회원 수 업데이트
-            document.getElementById('total-members').textContent = mockMembers.length;
+            // 페이지네이션 업데이트
+            document.getElementById('members-count').textContent = filteredMembers.length;
+            document.getElementById('current-page').textContent = currentPage;
+            document.getElementById('total-pages').textContent = totalPages;
             
-            // 예약 통계 업데이트
-            const totalReservations = mockReservations.reduce((sum, item) => sum + item.count, 0);
-            document.getElementById('total-reservations').textContent = totalReservations;
-            document.getElementById('active-reservations').textContent = mockReservations[mockReservations.length - 1].count;
-            
-            // 차트 렌더링
-            renderReservationsChart();
+            // 버튼 상태 업데이트
+            document.getElementById('prev-page').disabled = currentPage <= 1;
+            document.getElementById('next-page').disabled = currentPage >= totalPages;
         }
         
-        function renderReservationsChart() {
+        function renderMembersChart() {
+            // 데이터 준비
+            const months = adminData.analytics.members.map(item => item.month);
+            const counts = adminData.analytics.members.map(item => item.count);
+            
             const options = {
                 series: [{
-                    name: '예약 수',
-                    data: mockReservations.map(item => item.count)
+                    name: '가입자 수',
+                    data: counts
                 }],
                 chart: {
                     height: '100%',
                     type: 'area',
                     toolbar: {
                         show: false
-                    },
-                    zoom: {
-                        enabled: false
                     }
                 },
-                colors: ['#e11d48'],
+                colors: ['#8b5cf6'],
                 dataLabels: {
                     enabled: false
                 },
@@ -1774,7 +2332,314 @@
                     }
                 },
                 xaxis: {
-                    categories: mockReservations.map(item => item.month),
+                    categories: months,
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f1f1',
+                    strokeDashArray: 5
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + "명";
+                        }
+                    }
+                }
+            };
+            
+            // 기존 차트 제거
+            const chartElement = document.querySelector("#members-chart");
+            chartElement.innerHTML = '';
+            
+            // 새 차트 생성
+            const chart = new ApexCharts(chartElement, options);
+            chart.render();
+        }
+        
+        // 회원 필터링
+        function filterMembers() {
+            currentPage = 1;
+            renderMembersTable();
+        }
+        
+        // 페이지네이션
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderMembersTable();
+            }
+        }
+        
+        function goToNextPage() {
+            const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderMembersTable();
+            }
+        }
+        
+        // 회원 수정 함수
+        function editMember(memberId) {
+            const member = adminData.members.find(m => m.id === memberId);
+            if (member) {
+                showNotification(`${member.lastName}${member.firstName} 회원 정보 수정 기능은 준비 중입니다.`, 'info');
+            }
+        }
+        
+        // 예약 관리 탭 렌더링
+        function renderReservationsTab() {
+            // 통계 업데이트
+            updateReservationsStats();
+            
+            // 예약 목록 렌더링
+            renderReservationsTable();
+        }
+        
+        function updateReservationsStats() {
+            const totalReservations = adminData.reservations.length;
+            const activeReservations = adminData.reservations.filter(r => r.status === "확정").length;
+            const totalRevenue = adminData.reservations.reduce((sum, r) => sum + r.amount, 0);
+            
+            document.getElementById('total-reservations').textContent = totalReservations;
+            document.getElementById('active-reservations').textContent = activeReservations;
+            document.getElementById('total-revenue').textContent = `₩${totalRevenue.toLocaleString()}`;
+        }
+        
+        function renderReservationsTable() {
+            const tableBody = document.getElementById('reservations-table-body');
+            tableBody.innerHTML = '';
+            
+            // 예약 필터링
+            const filterValue = document.getElementById('reservation-filter').value;
+            let filteredReservations = [...adminData.reservations];
+            
+            if (filterValue === 'today') {
+                const today = new Date().toISOString().split('T')[0];
+                filteredReservations = adminData.reservations.filter(r => r.date === today);
+            } else if (filterValue === 'week') {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                filteredReservations = adminData.reservations.filter(r => new Date(r.date) >= weekAgo);
+            } else if (filterValue === 'month') {
+                const monthAgo = new Date();
+                monthAgo.setMonth(monthAgo.getMonth() - 1);
+                filteredReservations = adminData.reservations.filter(r => new Date(r.date) >= monthAgo);
+            }
+            
+            // 최근 예약 10개만 표시
+            const recentReservations = filteredReservations
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 10);
+            
+            // 테이블 행 생성
+            recentReservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-zinc-50';
+                
+                // 상태별 색상
+                let statusColor = 'bg-blue-100 text-blue-800';
+                if (reservation.status === "대기") {
+                    statusColor = 'bg-amber-100 text-amber-800';
+                } else if (reservation.status === "취소") {
+                    statusColor = 'bg-red-100 text-red-800';
+                }
+                
+                row.innerHTML = `
+                    <td class="py-3 px-4">${reservation.id}</td>
+                    <td class="py-3 px-4">
+                        <div class="font-medium">${reservation.memberName}</div>
+                        <div class="text-sm text-zinc-500">${reservation.memberEmail}</div>
+                    </td>
+                    <td class="py-3 px-4">${reservation.course}</td>
+                    <td class="py-3 px-4">
+                        <div>${reservation.date}</div>
+                        <div class="text-sm text-zinc-500">${reservation.time}</div>
+                    </td>
+                    <td class="py-3 px-4 font-medium">₩${reservation.amount.toLocaleString()}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColor}">
+                            ${reservation.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <button class="text-purple-600 hover:text-purple-800 text-sm font-medium" onclick="editReservation(${reservation.id})">
+                            관리
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function filterReservations() {
+            renderReservationsTable();
+        }
+        
+        // 예약 관리 함수
+        function editReservation(reservationId) {
+            const reservation = adminData.reservations.find(r => r.id === reservationId);
+            if (reservation) {
+                showNotification(`${reservation.course} 예약 관리 기능은 준비 중입니다.`, 'info');
+            }
+        }
+        
+        // 강좌 관리 탭 렌더링
+        function renderCoursesTab() {
+            const coursesList = document.getElementById('courses-list');
+            coursesList.innerHTML = '';
+            
+            adminData.courses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'bg-white rounded-xl border border-zinc-200 overflow-hidden hover:shadow-lg transition-all-300';
+                courseCard.innerHTML = `
+                    <div class="h-40 overflow-hidden bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center">
+                        <iconify-icon icon="mdi:book-education" width="48" height="48" class="text-purple-600"></iconify-icon>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="font-bold text-lg">${course.name}</h4>
+                            <span class="text-purple-700 font-bold">₩${course.price.toLocaleString()}</span>
+                        </div>
+                        <p class="text-zinc-600 text-sm mb-4">${course.duration}</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center text-sm text-zinc-500">
+                                <iconify-icon icon="mdi:account-group" width="16" height="16" class="mr-1"></iconify-icon>
+                                <span>${course.students}명</span>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${course.status === "진행중" ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
+                                ${course.status}
+                            </span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-all-300" onclick="editCourse(${course.id})">
+                                수정
+                            </button>
+                            <button class="flex-1 border border-zinc-300 text-zinc-700 py-2 rounded-lg text-sm font-medium hover:bg-zinc-50 transition-all-300" onclick="deleteCourse(${course.id})">
+                                삭제
+                            </button>
+                        </div>
+                    </div>
+                `;
+                coursesList.appendChild(courseCard);
+            });
+        }
+        
+        // 강좌 관리 함수
+        function editCourse(courseId) {
+            const course = adminData.courses.find(c => c.id === courseId);
+            if (course) {
+                showNotification(`${course.name} 강좌 수정 기능은 준비 중입니다.`, 'info');
+            }
+        }
+        
+        function deleteCourse(courseId) {
+            if (confirm('정말 이 강좌를 삭제하시겠습니까?')) {
+                adminData.courses = adminData.courses.filter(c => c.id !== courseId);
+                renderCoursesTab();
+                showNotification('강좌가 삭제되었습니다.', 'success');
+            }
+        }
+        
+        function addNewCourse() {
+            showNotification('새 강좌 추가 기능은 준비 중입니다.', 'info');
+        }
+        
+        // 통계 분석 탭 렌더링
+        function renderAnalyticsTab() {
+            renderAnalyticsCharts();
+        }
+        
+        function renderAnalyticsCharts() {
+            // 회원 가입 추이 차트
+            const membersOptions = {
+                series: [{
+                    name: '가입자 수',
+                    data: adminData.analytics.members.map(item => item.count)
+                }],
+                chart: {
+                    height: '100%',
+                    type: 'bar',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                colors: ['#8b5cf6'],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '60%',
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: adminData.analytics.members.map(item => item.month),
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: '#71717a',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                grid: {
+                    borderColor: '#f1f1f1',
+                    strokeDashArray: 5
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + "명";
+                        }
+                    }
+                }
+            };
+            
+            // 예약 추이 차트
+            const reservationsOptions = {
+                series: [{
+                    name: '예약 수',
+                    data: adminData.analytics.reservations.map(item => item.count)
+                }],
+                chart: {
+                    height: '100%',
+                    type: 'line',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                colors: ['#3b82f6'],
+                stroke: {
+                    width: 3,
+                    curve: 'smooth'
+                },
+                markers: {
+                    size: 5
+                },
+                xaxis: {
+                    categories: adminData.analytics.reservations.map(item => item.month),
                     labels: {
                         style: {
                             colors: '#71717a',
@@ -1803,16 +2668,35 @@
                 }
             };
             
-            const chart = new ApexCharts(document.querySelector("#reservations-chart"), options);
-            chart.render();
+            // 기존 차트 제거
+            document.querySelector("#analytics-members-chart").innerHTML = '';
+            document.querySelector("#analytics-reservations-chart").innerHTML = '';
+            
+            // 새 차트 생성
+            const membersChart = new ApexCharts(document.querySelector("#analytics-members-chart"), membersOptions);
+            membersChart.render();
+            
+            const reservationsChart = new ApexCharts(document.querySelector("#analytics-reservations-chart"), reservationsOptions);
+            reservationsChart.render();
+        }
+        
+        function updateAnalytics() {
+            const period = document.getElementById('analytics-period').value;
+            showNotification(`${period} 통계 데이터를 불러오는 기능은 준비 중입니다.`, 'info');
+        }
+        
+        function refreshMembers() {
+            renderMembersTab();
+            showNotification('회원 데이터를 새로고침했습니다.', 'success');
         }
         
         function exportMembersToExcel() {
             // 엑셀 다운로드 모의 구현
-            const data = mockMembers.map(member => ({
+            const data = adminData.members.map(member => ({
                 ID: member.id,
                 이름: `${member.lastName}${member.firstName}`,
                 이메일: member.email,
+                전화번호: member.phone,
                 가입일: member.joinDate,
                 예약수: member.reservations,
                 상태: member.status
@@ -1842,7 +2726,7 @@
         function showNotification(message, type = 'info') {
             // 간단한 알림 표시 (토스트 메시지)
             const toast = document.createElement('div');
-            toast.className = `fixed top-6 right-6 px-6 py-3 rounded-lg shadow-lg z-50 transition-all-300 transform translate-x-full ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+            toast.className = `fixed top-6 right-6 px-6 py-3 rounded-lg shadow-lg z-50 transition-all-300 transform translate-x-full ${type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-blue-100 text-blue-800 border border-blue-200'}`;
             toast.textContent = message;
             
             document.body.appendChild(toast);
@@ -1865,7 +2749,10 @@
         
         // 페이지 로드 시 현재 날짜 설정 (예약 폼)
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('reservation-date').min = today;
+        const dateInput = document.getElementById('reservation-date');
+        if (dateInput) {
+            dateInput.min = today;
+        }
         
         // 모바일에서 메뉴 클릭 시 메뉴 닫기
         document.querySelectorAll('#mobile-menu a').forEach(link => {
@@ -1892,6 +2779,12 @@
                 }
             });
         });
+        
+        // 전역 함수 내보내기
+        window.editMember = editMember;
+        window.editReservation = editReservation;
+        window.editCourse = editCourse;
+        window.deleteCourse = deleteCourse;
     </script>
 </body>
 </html>
